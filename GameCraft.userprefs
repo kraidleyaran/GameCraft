@@ -1,0 +1,31 @@
+﻿<Properties StartupItem="GameCraft\GameCraft.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="GameCraft\Objects\Message Objects\MessageType.cs">
+    <Files>
+      <File FileName="GameCraft\Game1.cs" Line="1" Column="1" />
+      <File FileName="GameCraft\Objects\GameObject.cs" Line="209" Column="24" />
+      <File FileName="GameCraft\Objects\Message Objects\GetMessageObject.cs" Line="1" Column="1" />
+      <File FileName="GameCraft\Objects\Message Objects\SetMessageObject.cs" Line="1" Column="1" />
+      <File FileName="GameCraft\Objects\Message Objects\AddMessageObject.cs" Line="1" Column="1" />
+      <File FileName="GameCraft\Objects\Message Objects\ExecuteMessageObject.cs" Line="1" Column="1" />
+      <File FileName="GameCraft\Objects\Message Objects\MessageType.cs" Line="11" Column="1" />
+      <File FileName="GameCraftTests\GameObjectTests.cs" Line="1" Column="1" NotebookId="1" />
+      <File FileName="GameCraft\Objects\Message Objects\MessageObject.cs" Line="28" Column="47" NotebookId="1" />
+      <File FileName="GameCraft\Objects\Message Objects\CommandObject.cs" Line="1" Column="1" NotebookId="1" />
+      <File FileName="GameCraft\Objects\Message Objects\ReceiptMessageObject.cs" Line="1" Column="1" NotebookId="1" />
+    </Files>
+    <Pads>
+      <Pad Id="MonoDevelop.NUnit.TestPad">
+        <State name="__root__">
+          <Node name="GameCraft" expanded="True">
+            <Node name="GameCraftTests" selected="True" />
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
