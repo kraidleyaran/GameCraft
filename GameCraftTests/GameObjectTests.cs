@@ -10,7 +10,7 @@ namespace GameCraftTests
 	[TestFixture ()]
 	public class GameObjectTests
 	{
-		[Test()]
+		[TestCase(TestName="Adding a property to a gameObject via GameObjectProperty should not throw an exception")]
 		public void AddPropertyToGameObject()
 		{
 			TestDelegate _addPropertyToGameObject = new TestDelegate (_AddPropertyToGameObject);
@@ -20,10 +20,10 @@ namespace GameCraftTests
 		public void _AddPropertyToGameObject()
 		{
 			GameObject newGameObject = new GameObject ("new game object");
-			GameObjectProperty<dynamic> newGameObjProperty = new GameObjectProperty<dynamic> ("test property");
+			GameObjectProperty newGameObjProperty = new GameObjectProperty ("test property");
 			Assert.IsTrue (newGameObject.AddProperty (newGameObjProperty));
 		}
-		[Test()]
+		[TestCase(TestName="Adding a property to a gameObject via string should not throw an exception")]
 		public void AddPropertyToGameObject_StringMethod()
 		{
 			TestDelegate _addPropertyToGameObject = new TestDelegate (_AddPropertyToGameObject);
@@ -35,16 +35,16 @@ namespace GameCraftTests
 			GameObject newGameObject = new GameObject ("new game object");
 			Assert.IsTrue (newGameObject.AddProperty ("test property"));
 		}
-		[Test()]
+		[TestCase(TestName="Adding a property via GameObjectProperty that already exists should return false")]
 		public void AddPropertyThatAlreadyExists_ReturnFalse()
 		{
 			GameObject newGameObject = new GameObject ("new game object");
-			GameObjectProperty<dynamic> newGameObjProperty = new GameObjectProperty<dynamic> ("test property");
+			GameObjectProperty newGameObjProperty = new GameObjectProperty ("test property");
 			newGameObject.AddProperty (newGameObjProperty);
 
 			Assert.IsFalse (newGameObject.AddProperty (newGameObjProperty));
 		}
-		[Test()]
+		[TestCase(TestName="Adding a property via string that already exists should return false")]
 		public void AddPropertyNameThatAlreadyExists_ReturnFalse()
 		{
 			GameObject newGameObject = new GameObject ("new game object");
@@ -52,82 +52,224 @@ namespace GameCraftTests
 
 			Assert.IsFalse (newGameObject.AddProperty ("new property"));
 		}
-		[Test()]
+		[TestCase(TestName="Removing a property from a GameObject via GameObjectProperty should work succesfully")]
 		public void RemovePropertyFromGameObject()
 		{
 			GameObject newGameObject = new GameObject ("new game object");
-			GameObjectProperty<dynamic> newGameObjProperty = new GameObjectProperty<dynamic> ("test property");
+			GameObjectProperty newGameObjProperty = new GameObjectProperty ("test property");
 			newGameObject.AddProperty (newGameObjProperty);
 			newGameObject.RemoveProperty (newGameObjProperty);
 
 			Assert.IsFalse(newGameObject.HasProperty(newGameObjProperty));
 		}
-		[Test()]
+		[TestCase(TestName="Removing a property from a GameObject via string should work succesfully")]
 		public void RemovePropertyByNameFromGameObject()
 		{
 			GameObject newGameObject = new GameObject ("new game object");
-			GameObjectProperty<dynamic> newGameObjProperty = new GameObjectProperty<dynamic> ("test property");
+			GameObjectProperty newGameObjProperty = new GameObjectProperty ("test property");
 			newGameObject.AddProperty (newGameObjProperty);
 
 			Assert.IsTrue (newGameObject.RemoveProperty ("test property"));
 		}
-		[Test()]
+		[TestCase(TestName="Removing a property via GameObjectProperty from a GameObject when it doesn't exist should return false")]
 		public void RemovePropertyFromGameObject_DoesntExist_ReturnFalse()
 		{
 			GameObject newGameObject = new GameObject ("new game object");
-			GameObjectProperty<dynamic> newGameObjProperty = new GameObjectProperty<dynamic> ("test property");
+			GameObjectProperty newGameObjProperty = new GameObjectProperty ("test property");
 
 			Assert.IsFalse(newGameObject.RemoveProperty(newGameObjProperty));
 		}
-		[Test()]
+		[TestCase(TestName="Removing a property via string from a GameObject when it doesn't exist should returnfalse")]
 		public void RemovePropertyFromGameObjectByName_DoesntExist_ReturnFalse()
 		{
 			GameObject newGameObject = new GameObject ("new game object");
 
 			Assert.IsFalse (newGameObject.RemoveProperty ("doesn't exist"));
 		}
-		[Test()]
+		[TestCase(TestName="Setting a Property on a GameObject that exists should return true")]
 		public void SetPropertyOnGameObject_ReturnTrue()
 		{
 			GameObject newGameObject = new GameObject ("new game object");
-			GameObjectProperty<dynamic> newGameObjProperty = new GameObjectProperty<dynamic> ("test property");
+			GameObjectProperty newGameObjProperty = new GameObjectProperty ("test property");
 			newGameObject.AddProperty (newGameObjProperty);
 			newGameObjProperty.Value = "string";
 
 			Assert.IsTrue (newGameObject.SetProperty (newGameObjProperty));
 		}
-		[Test()]
+		[TestCase(TestName="Setting a Property on a GameObject that doesn't exist should return false")]
 		public void SetPropertyOnGameObject_DoesntExist_ReturnFalse()
 		{
 			GameObject newGameObject = new GameObject ("new game object");
-			GameObjectProperty<dynamic> newGameObjProperty = new GameObjectProperty<dynamic> ("test property");
+			GameObjectProperty newGameObjProperty = new GameObjectProperty ("test property");
 
 			Assert.IsFalse (newGameObject.SetProperty (newGameObjProperty));
 		}
-		[Test()]
+		[TestCase(TestName="HasProperty() via GameObjectProperty should return true when a Property matching exists")]
 		public void HasPropertyOnGameObjectWithProperty_ReturnsTrue()
 		{
 			GameObject newGameObject = new GameObject ("new game object");
-			GameObjectProperty<dynamic> newGameObjProperty = new GameObjectProperty<dynamic> ("test property");
+			GameObjectProperty newGameObjProperty = new GameObjectProperty ("test property");
 			newGameObject.AddProperty (newGameObjProperty);
 
 			Assert.IsTrue (newGameObject.HasProperty(newGameObjProperty));
 		}
-		[Test()]
+		[TestCase(TestName="HasProperty() via string should return true when a Property exists")]
 		public void HasPropertyOnGameObjectWithProperty_ByName_ReturnsTrue()
 		{
 			GameObject newGameObject = new GameObject ("new game object");
-			GameObjectProperty<dynamic> newGameObjProperty = new GameObjectProperty<dynamic> ("test property");
+			GameObjectProperty newGameObjProperty = new GameObjectProperty ("test property");
 			newGameObject.AddProperty (newGameObjProperty);
 
 			Assert.IsTrue (newGameObject.HasProperty ("test property"));
 		}
-		[Test()]
+		[TestCase(TestName="HasProperty should return false if a Property on a GameObject doesn't exist")]
 		public void HasPropertyOnGameObject_DoesntExist_ReturnFalse()
 		{
 			GameObject newGameObject = new GameObject ("new game object");
 
 			Assert.IsFalse (newGameObject.HasProperty ("doesn't exist"));
+		}
+		[TestCase(TestName="Receiving an Add Message succesfully should return true")]
+		public void ReceiveAddMessage_Success_ReturnTrue()
+		{
+			GameObject newGameObject = new GameObject ("new game object");
+			string propName = "new property";
+			GameObjectProperty newProperty = new GameObjectProperty (propName);
+			newProperty.Value = false;
+			ObjectMessage newMessage = new ObjectMessage (CommandObject.add, newProperty);
+			Receipt<GameObjectProperty> newReceipt =  newGameObject.Receive (newMessage);
+			Assert.IsTrue (newReceipt.Status);
+			Assert.IsTrue (newGameObject.HasProperty (propName));
+		}
+		[TestCase(TestName="Receiving an Add Message when a property with that name already exists")]
+		public void ReceiveAddMessage_PropertyExists_ReturnFalse()
+		{
+			GameObject newGameObject = new GameObject ("new game object");
+			string propName = "new property";
+			GameObjectProperty newProperty = new GameObjectProperty (propName);
+			GameObjectProperty newerProperty = new GameObjectProperty (propName);
+			newProperty.Value = false;
+			ObjectMessage newMessage = new ObjectMessage (CommandObject.add, newProperty);
+			ObjectMessage newerMessage = new ObjectMessage (CommandObject.add, newerProperty);
+			newGameObject.Receive (newMessage);
+			Receipt<GameObjectProperty> newReceipt = newGameObject.Receive (newerMessage);
+			Assert.IsFalse (newReceipt.Status);
+		}
+		[TestCase(TestName="Receiving a Set Message when a property exists should return true")]
+		public void ReceiveSetMessage_PropertyExists_ReturnTrue()
+		{
+			GameObject newGameObject = new GameObject ("new game object");
+			string propName = "new property";
+			GameObjectProperty newProperty = new GameObjectProperty(propName, false);
+			newGameObject.AddProperty (newProperty);
+
+			GameObjectProperty newerProperty = new GameObjectProperty(propName, true);
+			ObjectMessage newMessage = new ObjectMessage (CommandObject.set, newerProperty);
+			Receipt<GameObjectProperty> newReceipt = newGameObject.Receive (newMessage);
+			Assert.IsTrue (newReceipt.Status);
+			Assert.IsTrue (newReceipt.Response.Value);
+			Assert.IsTrue (newGameObject.GetProperty (propName).Response.Value);
+
+		}
+		[TestCase(TestName="Receiving a Set message when a property doesn't exist should return false")]
+		public void ReceiveSetMessage_PropertyDoesntExist_ReturnFalse()
+		{
+			GameObject newGameObject = new GameObject ("new game object");
+			string propName = "new property";
+			GameObjectProperty newProperty = new GameObjectProperty(propName, false);
+
+			ObjectMessage newMessage = new ObjectMessage (CommandObject.set, newProperty);
+			Receipt<GameObjectProperty> newReceipt = newGameObject.Receive (newMessage);
+
+			Assert.IsFalse (newReceipt.Status);
+		}
+		[TestCase(TestName="Receiving a Get message when a property exists should return true")]
+		public void ReceiveGetMessage_PropertyExists_ReturnTrue()
+		{
+			GameObject newGameObject = new GameObject ("new game object");
+			string propName = "new property";
+			GameObjectProperty newProperty = new GameObjectProperty (propName, true);
+			newGameObject.AddProperty (newProperty);
+
+			GameObjectProperty messageProp = new GameObjectProperty (propName);
+
+			ObjectMessage newMessage = new ObjectMessage (CommandObject.get, messageProp);
+			Receipt<GameObjectProperty> newReceipt = newGameObject.Receive (newMessage);
+
+			Assert.IsTrue (newReceipt.Status);
+		}
+		[TestCase(TestName="Receive a Get message when a property exists should return the property")]
+		public void ReceiveGetMessage_PropertExists_ReturnProperty()
+		{
+			GameObject newGameObject = new GameObject ("new game object");
+			string propName = "new property";
+			GameObjectProperty newProperty = new GameObjectProperty (propName, true);
+
+			newGameObject.AddProperty (newProperty);
+
+			GameObjectProperty messageProp = new GameObjectProperty (propName);
+
+			ObjectMessage newMessage = new ObjectMessage (CommandObject.get, messageProp);
+			Receipt<GameObjectProperty> newReceipt = newGameObject.Receive (newMessage);
+
+			Assert.AreEqual (newReceipt.Response, newProperty);
+		}
+		[TestCase(TestName="Receieving a Get message when a property doesn't exist should return false")]
+		public void ReceiveGetMessage_PropertyDoesntExist()
+		{
+			GameObject newGameObject = new GameObject ("new game object");
+			string propName = "new property";
+			GameObjectProperty newProperty = new GameObjectProperty (propName);
+
+			ObjectMessage newMessage = new ObjectMessage (CommandObject.get, newProperty);
+
+			Receipt<GameObjectProperty> newReceipt = newGameObject.Receive (newMessage);
+
+			Assert.IsFalse (newReceipt.Status);
+		}
+		[TestCase(TestName="If a property's value is not defined when receiving a get message, reply with a null value and true status")]
+		public void ReceiveGetMessage_UndefinedProperty()
+		{
+			GameObject newGameObject = new GameObject ("new game object");
+			string propName = "new property";
+			GameObjectProperty newProperty = new GameObjectProperty (propName);
+
+			newGameObject.AddProperty (newProperty);
+
+			ObjectMessage newMessage = new ObjectMessage (CommandObject.get, newProperty);
+			Receipt<GameObjectProperty> newReceipt = newGameObject.Receive (newMessage);
+
+			Assert.IsNull (newReceipt.Response.Value);
+			Assert.IsTrue (newReceipt.Status);
+		}
+		[TestCase(TestName="Receving a Remove message removes a property from a GameObject, and returns true")]
+		public void ReceiveRemoveMessage_RemoveProperty_ReturnTrue()
+		{
+			GameObject newGameObject = new GameObject ("new game object");
+			string propName = "new property";
+			GameObjectProperty newProperty = new GameObjectProperty (propName);
+
+			newGameObject.AddProperty (newProperty);
+
+			ObjectMessage newmessage = new ObjectMessage (CommandObject.remove, newProperty); 
+			Receipt<GameObjectProperty> newReceipt = newGameObject.Receive (newmessage);
+
+			Assert.IsFalse(newGameObject.HasProperty(propName));
+			Assert.IsTrue (newReceipt.Status);
+
+		}
+		[TestCase(TestName="Receiving a Remove message when a property doesn't exists returns false")]
+		public void ReceiveRemoveMessage_PropertyDoesntExist_ReturnsFalse()
+		{
+			GameObject newGameObject = new GameObject ("new game object");
+
+			string propName = "new property";
+			GameObjectProperty newProperty = new GameObjectProperty (propName);
+
+			ObjectMessage newmessage = new ObjectMessage (CommandObject.remove, newProperty); 
+			Receipt<GameObjectProperty> newReceipt = newGameObject.Receive (newmessage);
+
+			Assert.IsFalse (newReceipt.Status);
 		}
 	}
 }

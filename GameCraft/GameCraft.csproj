@@ -39,6 +39,7 @@
     <Reference Include="MonoGame.Framework">
       <HintPath>..\packages\MonoGame.Framework.WindowsDX.3.4.0.459\lib\net40\MonoGame.Framework.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Game1.cs" />
@@ -46,15 +47,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Objects\GameObject.cs" />
     <Compile Include="Objects\Message Objects\MessageObject.cs" />
-    <Compile Include="Objects\Message Objects\GetMessageObject.cs" />
-    <Compile Include="Objects\Message Objects\SetMessageObject.cs" />
-    <Compile Include="Objects\Message Objects\AddMessageObject.cs" />
     <Compile Include="Objects\Message Objects\CommandObject.cs" />
-    <Compile Include="Objects\Message Objects\ExecuteMessageObject.cs" />
     <Compile Include="Objects\Message Objects\ReceiptMessageObject.cs" />
-    <Compile Include="Objects\Message Objects\MessageType.cs" />
     <Compile Include="Objects\GameBox.cs" />
     <Compile Include="Objects\GameObjectProperty.cs" />
+    <Compile Include="Objects\Message Objects\ObjectMessageObject.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Icon.png" />

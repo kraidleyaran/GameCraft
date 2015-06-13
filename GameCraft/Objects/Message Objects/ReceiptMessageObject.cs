@@ -1,50 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
 
+
 namespace GameCraft
 {
-	public class ReceiptObject<ObjType, ObjValueType>
+	public class Receipt<ObjValueType>
 	{
-		private string _propertyName;
-		private ObjType _recObject;
-		private ObjValueType _propertyValue;
+		private string _receiverName;
+		private ObjValueType _response;
+		private bool _status;
 
-		public ReceiptObject ()
+		public Receipt(string receiverName, ObjValueType response, bool status)
 		{
-		}
-		public ReceiptObject(string propertyName, ObjValueType propertyValue)
-		{
-			PropertyName = propertyName;
-			PropertyValue = propertyValue;
-		}
-		public ReceiptObject(ObjType recObject)
-		{
-			RecObject = recObject;
-		}
-		public ReceiptObject(string propertyName, ObjValueType propertyValue, ObjType recObject)
-		{
-			PropertyName = propertyName;
-			PropertyValue = propertyValue;
-			RecObject = recObject;
-		}
-			
-		public string PropertyName{
-			get { return _propertyName ; }
-			set { _propertyName = value; }
+			_receiverName = receiverName;
+			_response = response;
+			_status = status;
 		}
 
-		public ObjValueType PropertyValue{
-			get { return _propertyValue; }
-			set { _propertyValue = value; }
+		public string ReceiverName{
+			get { return _receiverName; }
 		}
 
-		public ObjType RecObject{
-			get { return _recObject; }
-			set { _recObject = value; }
+		public ObjValueType Response{
+			get { return _response; }
 		}
-
-
-
+		public bool Status{
+			get { return _status; }
+		}
 
 	}
 }

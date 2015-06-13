@@ -16,15 +16,22 @@ using GameCraft.GameMaster;
 
 namespace GameCraft
 {
-	public abstract class MessageObject<ObjType>
+	public class Message<ObjType>
 	{
-		public MessageObject ()
+		protected IList<ObjType> _receivers;
+		protected CommandObject _command;
+
+		public Message ()
 		{
 		}
 
-		public abstract IList<ObjType> Receivers { get; set;}
-		public abstract string PropertyName { get; set;}
-		public abstract CommandObject Command { get; set; }
+		public IList<ObjType> Receivers { 
+			get{ return _receivers; }
+			set{ _receivers = value; }
+		}
+		public CommandObject Command { 
+			get{ return _command;}
+		}
 
 	}
 }
