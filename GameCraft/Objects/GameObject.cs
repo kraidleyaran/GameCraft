@@ -4,22 +4,30 @@ using System.Reflection;
 using GameCraft;
 using GameCraft.GameMaster;
 
+
 namespace GameCraft.GameMaster
 {
 	public class GameObject
 	{
 		private string _name;
+		private Guid _uniqueId;
 		private IDictionary<string, GameObjectProperty> CustomProperties = new Dictionary<string, GameObjectProperty>();
 
 		public GameObject (string name)
 		{
 			_name = name;
+			_uniqueId = System.Guid.NewGuid ();
 		}
 
 
 		public string Name
 		{
 			get { return _name; }
+		}
+
+		public string UniqueId
+		{
+			get { return _uniqueId.ToString(); }
 		}
 
 		public Receipt<GameObjectProperty> Receive(ObjectMessage newMessage)

@@ -9,14 +9,15 @@ namespace GameCraft
 		private string _receiverName;
 		private ObjValueType _response;
 		private bool _status;
+		private Dictionary<string, bool> _failures;
 
 		public Receipt(string receiverName, ObjValueType response, bool status)
 		{
 			_receiverName = receiverName;
 			_response = response;
 			_status = status;
+			_failures = new Dictionary<string, bool> ();
 		}
-
 		public string ReceiverName{
 			get { return _receiverName; }
 		}
@@ -26,6 +27,11 @@ namespace GameCraft
 		}
 		public bool Status{
 			get { return _status; }
+		}
+		public Dictionary<string, bool> Failures
+		{
+			get { return _failures; }
+			set { _failures = value; }
 		}
 
 	}

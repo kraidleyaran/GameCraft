@@ -4,7 +4,7 @@ namespace GameCraft
 {
 	public enum CommandObject
 	{
-		add, set, get, remove
+		none, add, set, get, remove
 	}
 }
 

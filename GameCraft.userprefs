@@ -1,24 +1,29 @@
 ﻿<Properties StartupItem="GameCraft\GameCraft.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="GameCraft\Objects\Message Objects\MessageType.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="GameCraft\Objects\GameBox.cs">
     <Files>
-      <File FileName="GameCraft\Game1.cs" Line="1" Column="1" />
-      <File FileName="GameCraft\Objects\GameObject.cs" Line="209" Column="24" />
-      <File FileName="GameCraft\Objects\Message Objects\GetMessageObject.cs" Line="1" Column="1" />
-      <File FileName="GameCraft\Objects\Message Objects\SetMessageObject.cs" Line="1" Column="1" />
-      <File FileName="GameCraft\Objects\Message Objects\AddMessageObject.cs" Line="1" Column="1" />
-      <File FileName="GameCraft\Objects\Message Objects\ExecuteMessageObject.cs" Line="1" Column="1" />
-      <File FileName="GameCraft\Objects\Message Objects\MessageType.cs" Line="11" Column="1" />
-      <File FileName="GameCraftTests\GameObjectTests.cs" Line="1" Column="1" NotebookId="1" />
-      <File FileName="GameCraft\Objects\Message Objects\MessageObject.cs" Line="28" Column="47" NotebookId="1" />
+      <File FileName="GameCraft\Game1.cs" Line="57" Column="63" />
+      <File FileName="GameCraft\Objects\GameObject.cs" Line="38" Column="28" />
+      <File FileName="GameCraft\Objects\GameBox.cs" Line="169" Column="33" />
+      <File FileName="GameCraft\Objects\GameObjectProperty.cs" Line="1" Column="1" />
+      <File FileName="GameCraft\Objects\Message Objects\ObjectMessageObject.cs" Line="1" Column="1" />
+      <File FileName="GameCraft\GameObserver.cs" Line="12" Column="62" />
+      <File FileName="GameCraft\Objects\Message Objects\MessageObject.cs" Line="1" Column="1" NotebookId="1" />
       <File FileName="GameCraft\Objects\Message Objects\CommandObject.cs" Line="1" Column="1" NotebookId="1" />
-      <File FileName="GameCraft\Objects\Message Objects\ReceiptMessageObject.cs" Line="1" Column="1" NotebookId="1" />
+      <File FileName="GameCraft\Objects\Message Objects\ReceiptMessageObject.cs" Line="35" Column="4" NotebookId="1" />
+      <File FileName="GameCraftTests\GameBoxTests.cs" Line="214" Column="41" NotebookId="1" />
+      <File FileName="GameCraftTests\GameObjectTests.cs" Line="1" Column="1" NotebookId="1" />
+      <File FileName="GameCraft\Objects\Message Objects\BoxMessageObject.cs" Line="25" Column="4" NotebookId="1" />
     </Files>
     <Pads>
       <Pad Id="MonoDevelop.NUnit.TestPad">
         <State name="__root__">
           <Node name="GameCraft" expanded="True">
-            <Node name="GameCraftTests" selected="True" />
+            <Node name="GameCraftTests" expanded="True">
+              <Node name="GameCraftTests" expanded="True">
+                <Node name="GameBoxTests" selected="True" />
+              </Node>
+            </Node>
           </Node>
         </State>
       </Pad>
@@ -27,5 +32,7 @@
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches>
+    <Watch file="GameCraft\Objects\Message Objects\BoxMessageObject.cs" line="14" offsetX="270" offsetY="208" expression="_command" liveUpdate="False" />
+  </MonoDevelop.Ide.DebuggingService.PinnedWatches>
 </Properties>

@@ -52,6 +52,10 @@
     <Compile Include="Objects\GameBox.cs" />
     <Compile Include="Objects\GameObjectProperty.cs" />
     <Compile Include="Objects\Message Objects\ObjectMessageObject.cs" />
+    <Compile Include="GameObserver.cs" />
+    <Compile Include="Objects\Message Objects\BoxMessageObject.cs" />
+    <Compile Include="Objects\Message Objects\BoxResponse.cs" />
+    <Compile Include="Objects\Message Objects\ObjResponse.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Icon.png" />
