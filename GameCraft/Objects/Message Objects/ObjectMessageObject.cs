@@ -5,7 +5,7 @@ namespace GameCraft
 {
 	public class ObjectMessage : Message<GameObject>
 	{
-		protected GameObjectProperty _property;
+		protected List<GameObjectProperty> _propertyList = new List<GameObjectProperty> ();
 
 
 		public ObjectMessage (CommandObject command)
@@ -14,14 +14,22 @@ namespace GameCraft
 		}
 		public ObjectMessage (CommandObject command, GameObjectProperty property)
 		{
-			_property = property;
+			_propertyList = property;
 			_command = command;
 		}
 
-		public GameObjectProperty Property{
-			get {return _property;}
+		public List<GameObjectProperty> PropertyList{
+			get {return _propertyList;}
 		}
 
+		public List<string> PropertyNames{
+			get {
+				List<string> names = new List<string> ();
+				_propertyList.ForEach ((GameObjectProperty obj) => names.Add (obj.Name));
+				return names;
+			}
+				
+		}
 	}
 }
 

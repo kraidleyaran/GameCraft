@@ -9,13 +9,11 @@ namespace GameCraft
 	{
 		static readonly GameObserver instance = new GameObserver();
 
-		private Dictionary<string, GameObject> _objList = new Dictionary<string, GameObject>();
-		private Dictionary<string, GameBox> _boxList = new Dictionary<string, GameBox>();
-
-		private Dictionary<string, string> _objIdList = new Dictionary<string, string>();
-		private Dictionary<string, string> _boxIdList = new Dictionary<string, string>();
+		private List<GameObject> 
 
 		private Dictionary<string, List<string>> _objLocationList = new Dictionary<string, List<string>>();
+
+		private List<GameObject> _testList = new List<GameObject>();
 
 		static GameObserver ()
 		{
@@ -30,6 +28,12 @@ namespace GameCraft
 			}
 		}
 
+		public bool Clear()
+		{
+
+			return true;
+		}
+
 		public Receipt<BoxResponse> RegisterBox(GameBox gameBox)
 		{
 			bool doesNameExist = _BoxNameExists (gameBox.Name);
@@ -41,7 +45,7 @@ namespace GameCraft
 				return new Receipt<BoxResponse> ("GameObserver", new BoxResponse (false, gameBox.UniqueId + " GameBox Id has already been reigster"), false);
 			}
 			Receipt<BoxResponse> returnReceipt = new Receipt<BoxResponse> ("GameObserver", new BoxResponse (true), true);
-			Receipt<Dictionary<string, GameObject>> gameObjs = gameBox.GetAll ();
+			Receipt<Dictionary<GameObject>> gameObjs = gameBox.GetAll ();
 			foreach (KeyValuePair<string, GameObject> entry in gameObjs.Response) {
 				Receipt<ObjResponse> _registerObj = _RegisterGameObject (entry.Value);
 				if (_registerObj.Response.ObjName == true) {
@@ -49,7 +53,7 @@ namespace GameCraft
 				}
 				if (_registerObj.Response.ObjId == true) {
 					returnReceipt.Response.ObjIdList.Add (entry.Value.UniqueId, entry.Value.Name);
-				}
+				} 
 			}
 			_boxList.Add (gameBox.Name, gameBox);
 			_boxIdList.Add (gameBox.UniqueId, gameBox.Name);
@@ -78,7 +82,7 @@ namespace GameCraft
 		}
 		private bool _BoxNameExists(string boxName)
 		{
-			List<string> currentBoxNames = new List<string> (_boxIdList.Keys);
+			List<string> currentBoxNames = new List<string> (_boxList.Keys);
 			return currentBoxNames.Contains (boxName);
 		}
 
@@ -90,7 +94,7 @@ namespace GameCraft
 
 		private bool _ObjNameExists(string objName)
 		{
-			List<string> currentObjNames = new List<string> (_objIdList.Keys);
+			List<string> currentObjNames = new List<string> (_objList.Keys);
 			return currentObjNames.Contains (objName);			
 		}
 	}

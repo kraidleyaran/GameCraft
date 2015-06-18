@@ -10,7 +10,7 @@ namespace GameCraft.GameMaster
 	{
 		private string _name;
 		private Guid _uniqueId;
-		private Dictionary<string, GameObject> _container = new Dictionary<string, GameObject> ();
+		private List<GameObject> _container = new List<GameObject> ();
 
 		public GameBox (string name)
 		{
@@ -25,59 +25,91 @@ namespace GameCraft.GameMaster
 		{
 			get { return _uniqueId.ToString (); }
 		}
-		
-		public Receipt<Dictionary<GameObject, bool>> Receive(BoxMessageObject newMessage)
+		public Receipt<List<GameObject>> Receive(BoxMessageObject newMessage)
 		{
-			Receipt<Dictionary<GameObject, bool>> returnReceipt;
-			List<string> objNameList = new List<string> (newMessage.TargetObjs.Keys);
-						switch (newMessage.Command) {
+			Receipt<List<GameObject>> returnReceipt;
+			switch (newMessage.Command) {
 			case CommandObject.add:
-				returnReceipt = new Receipt<Dictionary<GameObject, bool>> (_name, Add (newMessage.TargetObjs).Response, true);
+				returnReceipt = new Receipt<List<GameObject>> (_name, Add (newMessage.TargetObjs).Response, true);
 				break;
 			case CommandObject.get:
-				objNameList = new List<string> (newMessage.TargetObjs.Keys);
-				returnReceipt = new Receipt<Dictionary<GameObject, bool>> (_name, Get (objNameList).Response, true);
+				List<string> getNameList = new List<string> ();
+				newMessage.TargetObjs.ForEach ((GameObject obj) => getNameList.Add (obj.Name));
+
+				returnReceipt = new Receipt<List<GameObject>> (_name, Get(getNameList).Response, true);
 				break;
 			case CommandObject.set:
-				returnReceipt = new Receipt<Dictionary<GameObject, bool>> (_name, Replace (newMessage.TargetObjs).Response, true);
+				returnReceipt = new Receipt<List<GameObject>> (_name, Replace (newMessage.TargetObjs).Response, true);
 				break;
 			case CommandObject.remove:
-				objNameList = new List<string> (newMessage.TargetObjs.Keys);
-				returnReceipt = new Receipt<Dictionary<GameObject, bool>> (_name, Remove (objNameList).Response, true);
+				List<string> objNameList = new List<string> ();
+				newMessage.TargetObjs.ForEach ((GameObject obj) => objNameList.Add (obj.Name));
+
+				returnReceipt = new Receipt<List<GameObject>> (_name, Remove (objNameList).Response, true);
 				break;
 			default:
-				returnReceipt = new Receipt<Dictionary<GameObject, bool>> (_name, new Dictionary<GameObject, bool>(), false);
+				returnReceipt = new Receipt<List<GameObject>> (_name, new List<GameObject>(), false);
 				break;
 			}
 			return returnReceipt;
 
 		}
-		public bool Add(string objectName, GameObject gameObject)
+		public Receipt<List<GameObject>> Receive(ObjectMessage newMessage)
 		{
-			bool gameObjectInBox = Contains (objectName);
+			Receipt<List<GameObject>> returnReceipt = new Receipt<List<GameObject>> (_name, new List<GameObject> (), true);
+			foreach (string objName in newMessage.Receivers) {
+				
+				Receipt<GameObject> getResponse = Get (objName);
+				if (getResponse.Status == true) {
+					
+					Receipt<List<GameObjectProperty>> objResponse = getResponse.Response.Receive (newMessage);
+
+					if (objResponse.Status == true) {
+						returnReceipt.Response.Add (getResponse.Response);
+
+						foreach (string fail in objResponse.Failures) {
+							returnReceipt.Failures.Add (fail);
+						}
+					} 
+					else 
+					{
+						returnReceipt.Failures.Add ("Possible command property failure " + _name);
+					}
+				}
+				else
+				{
+					returnReceipt.Failures.Add (objName + " GameObject does not exist in GameBox " + _name);
+				}
+			}
+			return returnReceipt;
+		}
+		public bool Add(GameObject gameObject)
+		{
+			bool gameObjectInBox = Contains (gameObject.Name);
 			bool returnBool;
 
 			if (gameObjectInBox == true) {
 				returnBool = false;
 			} else {
-				_container.Add (objectName, gameObject);
+				gameObject.Locations.Add (_name);
+				_container.Add (gameObject);
 				returnBool = true;
 			}
 			return returnBool;
 		}
-		public Receipt<Dictionary<GameObject, bool>> Add(Dictionary<string, GameObject> gameObjectList)
+		public Receipt<List<GameObject>> Add(List<GameObject> gameObjectList)
 		{
-			Dictionary<GameObject, bool> returnResult = new Dictionary<GameObject, bool> ();
+			List<GameObject> returnResult = new List<GameObject> ();
 			Dictionary<string, bool> returnFailure = new Dictionary<string, bool> ();
 
-			foreach (KeyValuePair<string, GameObject> gameObject in gameObjectList) {
-				bool returnBool = Add (gameObject.Key, gameObject.Value);
-				returnResult.Add (gameObject.Value, returnBool);
+			foreach (GameObject gameObject in gameObjectList) {
+				bool returnBool = Add (gameObject);
+				returnResult.Add (gameObject);
 				if (returnBool == false) {
-					returnFailure.Add (gameObject.Key, returnBool);
+					returnFailure.Add (gameObject.Name + " " + returnBool.ToString());
 				}
 			}
-			Receipt<Dictionary<GameObject, bool>> returnReceipt = new Receipt<Dictionary<GameObject, bool>> (_name, returnResult, true);
+			Receipt<List<GameObject>> returnReceipt = new Receipt<List<GameObject>> (_name, returnResult, true);
 			returnReceipt.Failures = returnFailure;
 			return returnReceipt;
 		}
@@ -85,98 +117,101 @@ namespace GameCraft.GameMaster
 		{
 			bool gameObjectInBox = Contains (objectName);
 			Receipt<GameObject> returnReceipt;
-			GameObject outObjValue = default(GameObject);
-
+			GameObject gameObject = new GameObject (objectName);
 			if (gameObjectInBox == true) {
-				_container.TryGetValue (objectName, out outObjValue);
-				returnReceipt = new Receipt<GameObject>(_name, outObjValue, gameObjectInBox);
-				_container.Remove (objectName);
+				gameObject = _container.Find (gameobject => gameobject.Name == objectName);
+				returnReceipt = new Receipt<GameObject>(_name, gameObject, gameObjectInBox);
+				_container.Remove (gameObject);
 			} else {
-				returnReceipt = new Receipt<GameObject> (_name, outObjValue, false);
+				returnReceipt = new Receipt<GameObject> (_name, gameObject, false);
 			}
 
 			return returnReceipt;
 		}
 
-		public Receipt<Dictionary<GameObject , bool>> Remove(IList<string> gameObjectNameList)
+		public Receipt<List<GameObject>> Remove(List<string> gameObjectNameList)
 		{
-			Dictionary<GameObject, bool> returnResult = new Dictionary<GameObject, bool> ();
+			List<GameObject> returnResult = new List<GameObject> ();
 			Dictionary<string, bool> returnFailures = new Dictionary<string, bool> ();
 
 			foreach (string gameObjectName in gameObjectNameList) {
 				Receipt<GameObject> _returnReceipt = Remove (gameObjectName);
 				if (_returnReceipt.Status == true) {
-					returnResult.Add (_returnReceipt.Response, _returnReceipt.Status);	
+					returnResult.Add (_returnReceipt.Response);
 				} else {
-					returnFailures.Add (gameObjectName, false);
+					returnFailures.Add (gameObjectName + " " + _returnReceipt.Status.ToString());
 				}
 
 			}
-			Receipt<Dictionary<GameObject, bool>> returnReceipt = new Receipt<Dictionary<GameObject, bool>> (_name, returnResult, true);
+			Receipt<List<GameObject>> returnReceipt = new Receipt<List<GameObject>> (_name, returnResult, true);
 			returnReceipt.Failures = returnFailures;
 			return returnReceipt;
 		}
 		public bool Contains(string objectName)
 		{
-			bool gameObjectInBox = _container.ContainsKey (objectName);
+			bool gameObjectInBox = _container.Contains (_container.Find(gameObj => gameObj.Name == objectName));
 			return gameObjectInBox;
 		}
-		public Receipt<GameObject> Replace(string objName, GameObject newObj)
+		public Receipt<GameObject> Replace(GameObject newObj)
 		{
-			Receipt<GameObject> replaceInBox = Remove (objName);
+			Receipt<GameObject> replaceInBox = Remove (newObj.Name);
 			if (replaceInBox.Status == true) {
-				Add(objName, newObj);
+				Add(newObj);
 			}
 			return replaceInBox;
 		}
-		public Receipt<Dictionary<GameObject, bool>> Replace(IDictionary<string, GameObject> objDict)
+		public Receipt<List<GameObject>> Replace(List<GameObject> objList)
 		{
-			Receipt<Dictionary<GameObject, bool> > returnReceipt = new Receipt<Dictionary<GameObject, bool> > (_name, new Dictionary<GameObject, bool> (), true);
+			Receipt<List<GameObject> > returnReceipt = new Receipt<List<GameObject> > (_name, new List<GameObject> (), true);
 
-			foreach (KeyValuePair<string, GameObject> entry in objDict) {
-				Receipt<GameObject> replaceInBox = Remove (entry.Key);
+			foreach (GameObject gameObject in objList) {
+				Receipt<GameObject> replaceInBox = Remove (gameObject.Name);
 				if (replaceInBox.Status == true) {
-					Add (entry.Key, entry.Value);
-					returnReceipt.Response.Add (entry.Value, true);
+					Add (gameObject);
+					returnReceipt.Response.Add (gameObject);
 				} else {
-					returnReceipt.Response.Add (entry.Value, false);
-					returnReceipt.Failures.Add (entry.Key, replaceInBox.Status);
+					returnReceipt.Failures.Add (gameObject.Name + " " + replaceInBox.Status.ToString());
 				}
 			}
 			return returnReceipt;
 		}
 		public Receipt<GameObject> Get(string objName)
 		{
-			GameObject returnObj;
-			bool newStatus = _container.TryGetValue (objName, out returnObj);
-			return new Receipt<GameObject> (_name, returnObj, newStatus);
+			GameObject returnObj = new GameObject (objName);
+			bool doesObjExist = Contains (objName);
+			if (doesObjExist == true) {
+				returnObj = _container.Find (gameObj => gameObj.Name == objName);
+				return new Receipt<GameObject> (_name, returnObj, true);
+			} else {
+				return new Receipt<GameObject> (_name, returnObj, false);
+			}
+
 		}
-		public Receipt<Dictionary<GameObject, bool>> Get (IList<string> objNameList)
+		public Receipt<List<GameObject>> Get (IList<string> objNameList)
 		{
-			Receipt<Dictionary<GameObject, bool>> returnReceipt = new Receipt<Dictionary<GameObject, bool>> (_name, new Dictionary<GameObject, bool> (), true);
+			Receipt<List<GameObject>> returnReceipt = new Receipt<List<GameObject>> (_name, new List<GameObject> (), true);
 			foreach (string name in objNameList) {
 				Receipt<GameObject> _getReturnReceipt = Get (name);
 				if (_getReturnReceipt.Status == true) {
-					returnReceipt.Response.Add (_getReturnReceipt.Response, _getReturnReceipt.Status);
+					returnReceipt.Response.Add (_getReturnReceipt.Response);
 				}else{
-					returnReceipt.Failures.Add (name, _getReturnReceipt.Status);
+					returnReceipt.Failures.Add (name + " " + _getReturnReceipt.Status.ToString());
 				}
 			}
 			return returnReceipt;
 		}
-		public Receipt<Dictionary<string, GameObject>> GetAll()
+		public Receipt<List<GameObject>> GetAll()
 		{
-			return new Receipt<Dictionary<string, GameObject>> (_name, _container, true);
+			return new Receipt<List<GameObject>> (_name, _container, true);
 		}
 		public Receipt<Dictionary<string, string>> GetIds()
 		{
-			Receipt<Dictionary<string, GameObject>> objectList = GetAll ();
-			Receipt<Dictionary<string, string>> returnReceipt = new Receipt<Dictionary<string, string>> (_name, new Dictionary<string, string> (), true);
-			foreach (KeyValuePair<string, GameObject> entry in objectList.Response) {
-				returnReceipt.Response.Add (entry.Key, entry.Value.UniqueId);
-			}
+			Dictionary<string, string> returnIds = new Dictionary<string, string> ();
+			_container.ForEach (delegate(GameObject gameObj) {
+				returnIds.Add(gameObj.Name, gameObj.UniqueId);
+			});
 
-			return returnReceipt;
+			return new Receipt<Dictionary<string, string>> (_name, returnIds, true);
 		}
 
 	}

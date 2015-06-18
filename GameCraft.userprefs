@@ -1,19 +1,22 @@
 ﻿<Properties StartupItem="GameCraft\GameCraft.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="GameCraft\Objects\GameBox.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="GameCraft\Objects\Message Objects\ReceiptMessageObject.cs">
     <Files>
-      <File FileName="GameCraft\Game1.cs" Line="57" Column="63" />
-      <File FileName="GameCraft\Objects\GameObject.cs" Line="38" Column="28" />
-      <File FileName="GameCraft\Objects\GameBox.cs" Line="169" Column="33" />
+      <File FileName="GameCraft\Game1.cs" Line="27" Column="3" />
+      <File FileName="GameCraft\Objects\GameObject.cs" Line="13" Column="26" />
+      <File FileName="GameCraft\Objects\GameBox.cs" Line="39" Column="18" />
       <File FileName="GameCraft\Objects\GameObjectProperty.cs" Line="1" Column="1" />
       <File FileName="GameCraft\Objects\Message Objects\ObjectMessageObject.cs" Line="1" Column="1" />
-      <File FileName="GameCraft\GameObserver.cs" Line="12" Column="62" />
-      <File FileName="GameCraft\Objects\Message Objects\MessageObject.cs" Line="1" Column="1" NotebookId="1" />
-      <File FileName="GameCraft\Objects\Message Objects\CommandObject.cs" Line="1" Column="1" NotebookId="1" />
-      <File FileName="GameCraft\Objects\Message Objects\ReceiptMessageObject.cs" Line="35" Column="4" NotebookId="1" />
-      <File FileName="GameCraftTests\GameBoxTests.cs" Line="214" Column="41" NotebookId="1" />
-      <File FileName="GameCraftTests\GameObjectTests.cs" Line="1" Column="1" NotebookId="1" />
-      <File FileName="GameCraft\Objects\Message Objects\BoxMessageObject.cs" Line="25" Column="4" NotebookId="1" />
+      <File FileName="GameCraft\Objects\Message Objects\MessageObject.cs" Line="1" Column="1" />
+      <File FileName="GameCraft\Objects\Message Objects\CommandObject.cs" Line="1" Column="1" />
+      <File FileName="GameCraft\Objects\Message Objects\ReceiptMessageObject.cs" Line="23" Column="4" />
+      <File FileName="GameCraftTests\GameBoxTests.cs" Line="1" Column="1" />
+      <File FileName="GameCraftTests\GameObjectTests.cs" Line="32" Column="4" />
+      <File FileName="GameCraft\Objects\Message Objects\BoxMessageObject.cs" Line="1" Column="1" />
+      <File FileName="GameCraft\Objects\Message Objects\ObjResponse.cs" Line="1" Column="1" />
+      <File FileName="GameCraft\GameObserver.cs" Line="30" Column="4" />
+      <File FileName="GameCraft\Objects\Message Objects\BoxResponse.cs" Line="1" Column="1" NotebookId="1" />
+      <File FileName="GameCraftTests\GameObserverTests.cs" Line="16" Column="4" NotebookId="1" />
     </Files>
     <Pads>
       <Pad Id="MonoDevelop.NUnit.TestPad">
@@ -21,7 +24,12 @@
           <Node name="GameCraft" expanded="True">
             <Node name="GameCraftTests" expanded="True">
               <Node name="GameCraftTests" expanded="True">
-                <Node name="GameBoxTests" selected="True" />
+                <Node name="GameBoxTests" expanded="True" />
+                <Node name="GameObserverTests" expanded="True">
+                  <Node name="RegisterGameBox_ReturnTrue" expanded="True">
+                    <Node name="Registering a GameBox works and returns true" selected="True" />
+                  </Node>
+                </Node>
               </Node>
             </Node>
           </Node>

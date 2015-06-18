@@ -18,14 +18,14 @@ namespace GameCraft
 {
 	public class Message<ObjType>
 	{
-		protected IList<ObjType> _receivers;
+		protected IList<string> _receivers;
 		protected CommandObject _command;
 
 		public Message ()
 		{
 		}
 
-		public IList<ObjType> Receivers { 
+		public IList<string> Receivers { 
 			get{ return _receivers; }
 			set{ _receivers = value; }
 		}

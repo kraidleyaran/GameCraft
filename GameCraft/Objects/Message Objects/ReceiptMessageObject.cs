@@ -28,7 +28,7 @@ namespace GameCraft
 		public bool Status{
 			get { return _status; }
 		}
-		public Dictionary<string, bool> Failures
+		public List<string> Failures
 		{
 			get { return _failures; }
 			set { _failures = value; }
