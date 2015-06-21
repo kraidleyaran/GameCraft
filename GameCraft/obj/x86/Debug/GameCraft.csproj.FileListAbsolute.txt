@@ -1,4 +1,3 @@
-G:\GameCraft\GameCraft\GameCraft\obj\x86\Debug\GameCraft.csprojResolveAssemblyReference.cache
 G:\GameCraft\GameCraft\GameCraft\bin\Debug\GameCraft.exe
 G:\GameCraft\GameCraft\GameCraft\bin\Debug\GameCraft.pdb
 G:\GameCraft\GameCraft\GameCraft\bin\Debug\MonoGame.Framework.dll

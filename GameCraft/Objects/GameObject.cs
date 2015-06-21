@@ -47,7 +47,7 @@ namespace GameCraft.GameMaster
 				case CommandObject.remove:
 					return RemoveManyProperty (newMessage.PropertyNames);
 				default:
-					return new Receipt<GameObjectProperty> ("INVALID COMMAND", new List<GameObjectProperty>() , false);
+					return new Receipt<List<GameObjectProperty>> ("INVALID COMMAND", new List<GameObjectProperty>() , false);
 			}
 		}
 		public bool AddProperty(GameObjectProperty gameObjProp)
@@ -91,8 +91,7 @@ namespace GameCraft.GameMaster
 		}
 		public bool RemoveProperty(GameObjectProperty gameObjProp)
 		{
-			bool doesPropExist = _properties.Remove (gameObjProp.Name);
-
+			bool doesPropExist = RemoveProperty (gameObjProp.Name);
 			return doesPropExist;
 		}
 		public bool RemoveProperty(string propName)
@@ -131,7 +130,7 @@ namespace GameCraft.GameMaster
 		}
 		public Receipt<List<GameObjectProperty>> SetManyProperty(List<GameObjectProperty> propList)
 		{
-			Receipt<List<GameObjectProperty>> returnReceipt = new Receipt<GameObjectProperty> (_name, new List<GameObjectProperty> (), true);
+			Receipt<List<GameObjectProperty>> returnReceipt = new Receipt<List<GameObjectProperty>> (_name, new List<GameObjectProperty> (), true);
 			foreach (GameObjectProperty prop in propList) {
 				if (SetProperty (prop) == true) {
 					returnReceipt.Response.Add (prop);
@@ -177,6 +176,8 @@ namespace GameCraft.GameMaster
 					returnReceipt.Failures.Add (propName + " does not exist in GameObject " + _name);
 				}
 			}
+
+			return returnReceipt;
 		}
 
 	}

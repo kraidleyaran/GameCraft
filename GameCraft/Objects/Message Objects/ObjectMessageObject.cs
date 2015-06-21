@@ -12,10 +12,15 @@ namespace GameCraft
 		{
 			_command = command;
 		}
-		public ObjectMessage (CommandObject command, GameObjectProperty property)
+		public ObjectMessage (CommandObject command, List<GameObjectProperty> propertyList)
 		{
-			_propertyList = property;
+			_propertyList = propertyList;
 			_command = command;
+		}
+		public ObjectMessage (CommandObject command, GameObjectProperty prop)
+		{
+			_command = command;
+			_propertyList.Add (prop);
 		}
 
 		public List<GameObjectProperty> PropertyList{

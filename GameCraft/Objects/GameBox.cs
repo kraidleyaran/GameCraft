@@ -8,9 +8,9 @@ namespace GameCraft.GameMaster
 {
 	public class GameBox
 	{
-		private string _name;
+		private readonly string _name;
 		private Guid _uniqueId;
-		private List<GameObject> _container = new List<GameObject> ();
+		private readonly List<GameObject> _container = new List<GameObject> ();
 
 		public GameBox (string name)
 		{
@@ -30,22 +30,33 @@ namespace GameCraft.GameMaster
 			Receipt<List<GameObject>> returnReceipt;
 			switch (newMessage.Command) {
 			case CommandObject.add:
-				returnReceipt = new Receipt<List<GameObject>> (_name, Add (newMessage.TargetObjs).Response, true);
+			    Receipt<List<GameObject>> addReceipt = Add(newMessage.TargetObjs);
+                returnReceipt = new Receipt<List<GameObject>>(_name, addReceipt.Response, true);
+                returnReceipt.Failures = addReceipt.Failures;           
 				break;
 			case CommandObject.get:
 				List<string> getNameList = new List<string> ();
 				newMessage.TargetObjs.ForEach ((GameObject obj) => getNameList.Add (obj.Name));
+		        Receipt <List<GameObject>> getReceipt = Get(getNameList);
 
-				returnReceipt = new Receipt<List<GameObject>> (_name, Get(getNameList).Response, true);
+                returnReceipt = new Receipt<List<GameObject>> (_name, getReceipt.Response, true);
+			    returnReceipt.Failures = getReceipt.Failures;
+
 				break;
 			case CommandObject.set:
-				returnReceipt = new Receipt<List<GameObject>> (_name, Replace (newMessage.TargetObjs).Response, true);
+			    Receipt<List<GameObject>> setReceipt = Replace(newMessage.TargetObjs);
+                returnReceipt = new Receipt<List<GameObject>> (_name, setReceipt.Response, true);
+			    returnReceipt.Failures = setReceipt.Failures;
+
 				break;
 			case CommandObject.remove:
 				List<string> objNameList = new List<string> ();
 				newMessage.TargetObjs.ForEach ((GameObject obj) => objNameList.Add (obj.Name));
+			    Receipt<List<GameObject>> removeReceipt = Remove(objNameList);
+                    
+                returnReceipt = new Receipt<List<GameObject>>(_name, removeReceipt.Response, true);
+			    returnReceipt.Failures = removeReceipt.Failures;
 
-				returnReceipt = new Receipt<List<GameObject>> (_name, Remove (objNameList).Response, true);
 				break;
 			default:
 				returnReceipt = new Receipt<List<GameObject>> (_name, new List<GameObject>(), false);
@@ -100,14 +111,19 @@ namespace GameCraft.GameMaster
 		public Receipt<List<GameObject>> Add(List<GameObject> gameObjectList)
 		{
 			List<GameObject> returnResult = new List<GameObject> ();
-			Dictionary<string, bool> returnFailure = new Dictionary<string, bool> ();
+			List<string> returnFailure = new List<string> ();
 
 			foreach (GameObject gameObject in gameObjectList) {
 				bool returnBool = Add (gameObject);
-				returnResult.Add (gameObject);
-				if (returnBool == false) {
-					returnFailure.Add (gameObject.Name + " " + returnBool.ToString());
-				}
+
+                if (returnBool == false)
+                {
+                    returnFailure.Add(gameObject.Name + " " + returnBool.ToString());
+                }
+                else
+                {
+                    returnResult.Add(gameObject);
+                }
 			}
 			Receipt<List<GameObject>> returnReceipt = new Receipt<List<GameObject>> (_name, returnResult, true);
 			returnReceipt.Failures = returnFailure;
@@ -132,7 +148,7 @@ namespace GameCraft.GameMaster
 		public Receipt<List<GameObject>> Remove(List<string> gameObjectNameList)
 		{
 			List<GameObject> returnResult = new List<GameObject> ();
-			Dictionary<string, bool> returnFailures = new Dictionary<string, bool> ();
+			List<string> returnFailures = new List<string> ();
 
 			foreach (string gameObjectName in gameObjectNameList) {
 				Receipt<GameObject> _returnReceipt = Remove (gameObjectName);

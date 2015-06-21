@@ -136,8 +136,9 @@ namespace GameCraftTests
 			string propName = "new property";
 			GameObjectProperty newProperty = new GameObjectProperty (propName);
 			newProperty.Value = false;
-			ObjectMessage newMessage = new ObjectMessage (CommandObject.add, newProperty);
-			Receipt<GameObjectProperty> newReceipt =  newGameObject.Receive (newMessage);
+			ObjectMessage newMessage = new ObjectMessage (CommandObject.add, new List<GameObjectProperty>());
+			newMessage.PropertyList.Add (newProperty);
+			Receipt<List<GameObjectProperty>> newReceipt =  newGameObject.Receive (newMessage);
 			Assert.IsTrue (newReceipt.Status);
 			Assert.IsTrue (newGameObject.HasProperty (propName));
 		}
@@ -152,8 +153,9 @@ namespace GameCraftTests
 			ObjectMessage newMessage = new ObjectMessage (CommandObject.add, newProperty);
 			ObjectMessage newerMessage = new ObjectMessage (CommandObject.add, newerProperty);
 			newGameObject.Receive (newMessage);
-			Receipt<GameObjectProperty> newReceipt = newGameObject.Receive (newerMessage);
-			Assert.IsFalse (newReceipt.Status);
+			Receipt<List<GameObjectProperty>> newReceipt = newGameObject.Receive (newerMessage);
+			Assert.GreaterOrEqual (newReceipt.Failures.Count, 1);
+
 		}
 		[TestCase(TestName="Receiving a Set Message when a property exists should return true")]
 		public void ReceiveSetMessage_PropertyExists_ReturnTrue()
@@ -165,10 +167,10 @@ namespace GameCraftTests
 
 			GameObjectProperty newerProperty = new GameObjectProperty(propName, true);
 			ObjectMessage newMessage = new ObjectMessage (CommandObject.set, newerProperty);
-			Receipt<GameObjectProperty> newReceipt = newGameObject.Receive (newMessage);
+			Receipt<List<GameObjectProperty>> newReceipt = newGameObject.Receive (newMessage);
 			Assert.IsTrue (newReceipt.Status);
-			Assert.IsTrue (newReceipt.Response.Value);
-			Assert.IsTrue (newGameObject.GetProperty (propName).Response.Value);
+			Assert.GreaterOrEqual (newReceipt.Response.Count, 1);
+			Assert.IsTrue (newGameObject.GetProperty (propName).Status);
 
 		}
 		[TestCase(TestName="Receiving a Set message when a property doesn't exist should return false")]
@@ -179,9 +181,9 @@ namespace GameCraftTests
 			GameObjectProperty newProperty = new GameObjectProperty(propName, false);
 
 			ObjectMessage newMessage = new ObjectMessage (CommandObject.set, newProperty);
-			Receipt<GameObjectProperty> newReceipt = newGameObject.Receive (newMessage);
+			Receipt<List<GameObjectProperty>> newReceipt = newGameObject.Receive (newMessage);
 
-			Assert.IsFalse (newReceipt.Status);
+			Assert.GreaterOrEqual (newReceipt.Failures.Count, 1);
 		}
 		[TestCase(TestName="Receiving a Get message when a property exists should return true")]
 		public void ReceiveGetMessage_PropertyExists_ReturnTrue()
@@ -194,9 +196,9 @@ namespace GameCraftTests
 			GameObjectProperty messageProp = new GameObjectProperty (propName);
 
 			ObjectMessage newMessage = new ObjectMessage (CommandObject.get, messageProp);
-			Receipt<GameObjectProperty> newReceipt = newGameObject.Receive (newMessage);
+			Receipt<List<GameObjectProperty>> newReceipt = newGameObject.Receive (newMessage);
 
-			Assert.IsTrue (newReceipt.Status);
+			Assert.GreaterOrEqual (newReceipt.Response.Count, 1);
 		}
 		[TestCase(TestName="Receive a Get message when a property exists should return the property")]
 		public void ReceiveGetMessage_PropertExists_ReturnProperty()
@@ -210,9 +212,9 @@ namespace GameCraftTests
 			GameObjectProperty messageProp = new GameObjectProperty (propName);
 
 			ObjectMessage newMessage = new ObjectMessage (CommandObject.get, messageProp);
-			Receipt<GameObjectProperty> newReceipt = newGameObject.Receive (newMessage);
+			Receipt<List<GameObjectProperty>> newReceipt = newGameObject.Receive (newMessage);
 
-			Assert.AreEqual (newReceipt.Response, newProperty);
+			Assert.AreEqual (newReceipt.Response.Find((GameObjectProperty obj) => obj.Name == newProperty.Name).Name, newProperty.Name);
 		}
 		[TestCase(TestName="Receieving a Get message when a property doesn't exist should return false")]
 		public void ReceiveGetMessage_PropertyDoesntExist()
@@ -223,24 +225,9 @@ namespace GameCraftTests
 
 			ObjectMessage newMessage = new ObjectMessage (CommandObject.get, newProperty);
 
-			Receipt<GameObjectProperty> newReceipt = newGameObject.Receive (newMessage);
+			Receipt<List<GameObjectProperty>> newReceipt = newGameObject.Receive (newMessage);
 
-			Assert.IsFalse (newReceipt.Status);
-		}
-		[TestCase(TestName="If a property's value is not defined when receiving a get message, reply with a null value and true status")]
-		public void ReceiveGetMessage_UndefinedProperty()
-		{
-			GameObject newGameObject = new GameObject ("new game object");
-			string propName = "new property";
-			GameObjectProperty newProperty = new GameObjectProperty (propName);
-
-			newGameObject.AddProperty (newProperty);
-
-			ObjectMessage newMessage = new ObjectMessage (CommandObject.get, newProperty);
-			Receipt<GameObjectProperty> newReceipt = newGameObject.Receive (newMessage);
-
-			Assert.IsNull (newReceipt.Response.Value);
-			Assert.IsTrue (newReceipt.Status);
+			Assert.GreaterOrEqual (newReceipt.Failures.Count, 1);
 		}
 		[TestCase(TestName="Receving a Remove message removes a property from a GameObject, and returns true")]
 		public void ReceiveRemoveMessage_RemoveProperty_ReturnTrue()
@@ -252,10 +239,10 @@ namespace GameCraftTests
 			newGameObject.AddProperty (newProperty);
 
 			ObjectMessage newmessage = new ObjectMessage (CommandObject.remove, newProperty); 
-			Receipt<GameObjectProperty> newReceipt = newGameObject.Receive (newmessage);
+			Receipt<List<GameObjectProperty>> newReceipt = newGameObject.Receive (newmessage);
 
 			Assert.IsFalse(newGameObject.HasProperty(propName));
-			Assert.IsTrue (newReceipt.Status);
+			Assert.GreaterOrEqual (newReceipt.Response.Count, 1);
 
 		}
 		[TestCase(TestName="Receiving a Remove message when a property doesn't exists returns false")]
@@ -267,9 +254,9 @@ namespace GameCraftTests
 			GameObjectProperty newProperty = new GameObjectProperty (propName);
 
 			ObjectMessage newmessage = new ObjectMessage (CommandObject.remove, newProperty); 
-			Receipt<GameObjectProperty> newReceipt = newGameObject.Receive (newmessage);
+			Receipt<List<GameObjectProperty>> newReceipt = newGameObject.Receive (newmessage);
 
-			Assert.IsFalse (newReceipt.Status);
+			Assert.GreaterOrEqual (newReceipt.Failures.Count, 1);
 		}
 	}
 }

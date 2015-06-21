@@ -18,6 +18,11 @@ namespace GameCraft
 			_command = command;
 			_targetObjs = targetObjs;
 		}
+		public BoxMessageObject(CommandObject command, GameObject gameObj)
+		{
+			_command = command;
+			_targetObjs.Add (gameObj);
+		}
 		public List<GameObject> TargetObjs
 		{
 			get { return _targetObjs; }
