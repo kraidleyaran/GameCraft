@@ -7,38 +7,31 @@ namespace GameCraft
 {
 	public class BoxResponse
 	{
-		private List<string> _objNamelist = new List<string> ();
-		private Dictionary<string, string> _objIdList = new Dictionary<string, string> ();
-		private bool _status;
-		private string _statusMessage;
+	    private readonly string _name;
+        private List<GameObject> _objList = new List<GameObject> ();
 
-		public BoxResponse (bool status)
+
+		public BoxResponse (string name)
 		{
-			_status = status;
-		}
-		public BoxResponse (bool status, string statusMessage)
-		{
-			_status = status;
-			_statusMessage = statusMessage;
+		    _name = name;
 		}
 
-		public List<string> ObjNameList
-		{
-			get { return _objNamelist; }
-		}
-		public Dictionary<string, string> ObjIdList
-		{
-			get { return _objIdList; }
-		}
-		public bool Status
-		{
-			get { return Status; }
-		}
-		public string StatusMessage
-		{
-			get { return _statusMessage; }
-			set { _statusMessage = value; }
-		}
+	    public BoxResponse(string name, List<GameObject> objList)
+	    {
+	        _name = name;
+	        _objList = objList;
+	    }
+
+	    public string Name
+	    {
+            get { return _name;  }
+	    }
+
+	    public List<GameObject> ObjList
+	    {
+            get { return _objList;}
+            set { _objList = value;  }
+	    }
 	}
 }
 

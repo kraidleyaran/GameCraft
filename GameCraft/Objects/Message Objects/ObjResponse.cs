@@ -1,26 +1,36 @@
 ﻿using System;
+using System.Collections.Generic;
+using GameCraft.GameMaster;
 
 namespace GameCraft
 {
 	public class ObjResponse
 	{
-		private bool _objName;
-		private bool _objId;
+		private string _objName;
+        private List<GameObjectProperty>  _objProps = new List<GameObjectProperty>();
+		
 
-		public ObjResponse (bool objName, bool objId)
+		public ObjResponse (string objName)
 		{
 			_objName = objName;
-			_objId = objId;
 		}
 
-		public bool ObjName
+	    public ObjResponse(string objName, List<GameObjectProperty> objProps)
+	    {
+	        _objName = objName;
+	        _objProps = objProps;
+	    }
+
+	    public string ObjName
 		{
 			get {return _objName; }
 		}
-		public bool ObjId
-		{
-			get {return ObjId; }
-		}
+
+	    public List<GameObjectProperty> ObjProperties
+	    {
+            get { return _objProps; }
+            set { _objProps = value; }
+	    }
 	}
 }
 

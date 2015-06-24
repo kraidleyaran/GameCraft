@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using GameCraft.GameMaster;
 
 
 namespace GameCraft
@@ -9,14 +10,14 @@ namespace GameCraft
 		private string _receiverName;
 		private ObjValueType _response;
 		private bool _status;
-		private List<string> _failures;
+		private List<Failure> _failures;
 
 		public Receipt(string receiverName, ObjValueType response, bool status)
 		{
 			_receiverName = receiverName;
 			_response = response;
 			_status = status;
-			_failures = new List<string> ();
+			_failures = new List<Failure> ();
 		}
 		public string ReceiverName{
 			get { return _receiverName; }
@@ -29,7 +30,7 @@ namespace GameCraft
 			get { return _status; }
             set { _status = value; }
 		}
-		public List<string> Failures
+		public List<Failure> Failures
 		{
 			get { return _failures; }
 			set { _failures = value; }

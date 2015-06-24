@@ -81,7 +81,9 @@ namespace GameCraft.GameMaster
 				if (addPropResponse == true) {
 					returnReceipt.Response.Add (prop);
 				} else {
-					returnReceipt.Failures.Add (prop.Name + " property already exists in GameObject " + _name);
+					Failure newFail = new Failure(prop.Name);
+                    newFail.FailList.Add("Property already exists in GameObject " + _name);
+                    returnReceipt.Failures.Add (newFail);
 				}
 
 			}
@@ -113,7 +115,9 @@ namespace GameCraft.GameMaster
 					returnReceipt.Response.Add (GetProperty (name).Response);
 					RemoveProperty (name);
 				} else {
-					returnReceipt.Failures.Add (name + " property does not exist on GameObject " + _name);
+                    Failure newFail = new Failure(name);
+                    newFail.FailList.Add("Property does not exist on GameObject " + _name);
+					returnReceipt.Failures.Add (newFail);
 				}
 			}
 
@@ -135,7 +139,9 @@ namespace GameCraft.GameMaster
 				if (SetProperty (prop) == true) {
 					returnReceipt.Response.Add (prop);
 				} else {
-					returnReceipt.Failures.Add (prop.Name + " does not exist in GameObject " + _name);
+                    Failure newFail = new Failure(prop.Name);
+                    newFail.FailList.Add("Does not exist in GameObject " + _name);
+                    returnReceipt.Failures.Add(newFail);
 				}
 			}
 			return returnReceipt;
@@ -159,7 +165,9 @@ namespace GameCraft.GameMaster
 			if (doesPropExist == true) {
 				returnProperty = _properties.Find (prop => prop.Name == propName);
 			} else {
-				returnReceipt.Failures.Add (propName + " does not exist on " + _name + " GameObject");
+                Failure newFail = new Failure(propName);
+                newFail.FailList.Add("Does not exist on " + _name + " GameObject");
+				returnReceipt.Failures.Add (newFail);
 			}
 
 
@@ -173,7 +181,9 @@ namespace GameCraft.GameMaster
 				if (getResponse.Status == true) {
 					returnReceipt.Response.Add (getResponse.Response);
 				} else {
-					returnReceipt.Failures.Add (propName + " does not exist in GameObject " + _name);
+                    Failure newFail = new Failure(propName);
+                    newFail.FailList.Add("Does not exist in GameObject " + _name);
+					returnReceipt.Failures.Add (newFail);
 				}
 			}
 

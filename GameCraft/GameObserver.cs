@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using GameCraft;
 using GameCraft.GameMaster;
 
@@ -32,40 +33,26 @@ namespace GameCraft
 			return true;
 		}
 
-		public Receipt<GameBox> RegisterBox(GameBox gameBox)
-		{
-			Receipt<GameBox> returnReceipt;
-			bool doesNameExist = _BoxNameExists (gameBox.Name);
-			if (doesNameExist == true) {
-				returnReceipt = new Receipt<GameBox> ("GameObserver", gameBox , false);
-				returnReceipt.Failures.Add (gameBox.Name + " GameBox is already being observed");
-			} else {
-				returnReceipt = new Receipt<GameBox> ("GameObserver", gameBox, true);
-			    Receipt<List<GameObject>> objReceipt = _RegisterManyGameObjects(gameBox.GetAll().Response);
-			    returnReceipt.Failures = objReceipt.Failures;
-				_boxList.Add (gameBox);
-			}
-			return returnReceipt;
-		}
+	    public bool CreateBox(string name)
+	    {
+	        bool boxExists = DoesBoxExist(name);
+	        if (boxExists)
+	        {
+	            return false;
+	        }
+	        else
+	        {
+                _boxList.Add(new GameBox(name));
+	            return true;
+	        }
+	    }
 
-		public Receipt<List<GameBox>> RegisterManyBoxes(List<GameBox> boxList)
-		{
-			Receipt<List<GameBox>> returnReceipt = new Receipt<List<GameBox>>("GameObserver", new List<GameBox>(), true);
-			foreach (GameBox box in boxList) {
-				Receipt<GameBox> registerResponse = RegisterBox (box);
-				if (registerResponse.Status == true) {
-					returnReceipt.Response.Add (box);
-				} else {
-					foreach(string fail in registerResponse.Failures)
-					{
-						returnReceipt.Failures.Add (fail);
-					}
-				}
-			}
-			return returnReceipt;
-		}
+	    public bool DoesBoxExist(string name)
+	    {
+	        return _boxList.Contains(_boxList.Find(gameBox => gameBox.Name == name));
+	    }
 
-	    private Receipt<GameObject> _RegisterGameObject(GameObject newGameObject)
+	    public Receipt<GameObject> RegisterGameObject(GameObject newGameObject)
 	    {
 	        Receipt<GameObject> returnReceipt = new Receipt<GameObject>("GameObserver", newGameObject, false);
             bool objName = DoesGameObjNameExist(newGameObject.Name);
@@ -74,7 +61,9 @@ namespace GameCraft
 	        {
 	            if (!objId)
 	            {
-                    returnReceipt.Failures.Add(newGameObject.Name + " GameObject with a different Id is already being observed");
+                    Failure newFail = new Failure(newGameObject.Name);
+                    newFail.FailList.Add("GameObject with a different Id is already being observed");
+                    returnReceipt.Failures.Add(newFail);
 	            }
 	            else
 	            {
@@ -82,7 +71,7 @@ namespace GameCraft
 	            }
 	            
 	        }
-	        if (!objName)
+	        else
 	        {
 	            if (!objId)
 	            {
@@ -91,7 +80,9 @@ namespace GameCraft
 	            }
 	            else
 	            {
-	                returnReceipt.Failures.Add(newGameObject.UniqueId + " Unique Id already exists on a GameObject that is being observed");
+                    Failure newFail = new Failure(newGameObject.Name);
+                    newFail.FailList.Add(newGameObject.UniqueId + " Unique Id already exists on a GameObject that is being observed");
+	                returnReceipt.Failures.Add(newFail);
 	            }
 
 	        }
@@ -99,15 +90,15 @@ namespace GameCraft
 	        return returnReceipt;
 	    }
 
-	    private Receipt<List<GameObject>> _RegisterManyGameObjects(List<GameObject> gameObjList)
+	    public Receipt<List<GameObject>> RegisterManyGameObjects(List<GameObject> gameObjList)
 	    {
             Receipt<List<GameObject>> returnReceipt = new Receipt<List<GameObject>>("GameObserver", new List<GameObject>(), true);
 	        foreach (GameObject obj in gameObjList)
 	        {
-	            Receipt<GameObject> objReceipt = _RegisterGameObject(obj);
+                Receipt<GameObject> objReceipt = RegisterGameObject(obj);
 	            if (!objReceipt.Status)
 	            {
-	                foreach (string fail in objReceipt.Failures)
+	                foreach (Failure fail in objReceipt.Failures)
 	                {
 	                    returnReceipt.Failures.Add(fail);
 	                }
@@ -119,6 +110,11 @@ namespace GameCraft
 	        }
 
 	        return returnReceipt;
+	    }
+
+	    public void SendMessage(ObjectMessage newMessage)
+	    {
+	        Receipt<List<ObjResponse>> returnrReceipt = new Receipt<List<ObjResponse>>("GameObserver", new List<ObjResponse>(), true );
 	    }
 
 
@@ -139,13 +135,11 @@ namespace GameCraft
 			_boxList.ForEach ((GameBox obj) => boxNames.Add (obj.Name));
 			return boxNames;
 		}
-		private bool _BoxNameExists(string boxName)
+		public bool DoesBoxNameExists(string boxName)
 		{
 			List<string> currentBoxNames = GetBoxNames ();
 			return currentBoxNames.Contains (boxName);
 		}
-
-			
 	}
 }
 
