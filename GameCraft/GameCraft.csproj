@@ -64,6 +64,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Game1.cs" />
+    <Compile Include="Objects\Designer Objects\Action.cs" />
+    <Compile Include="Objects\Designer Objects\Condition.cs" />
+    <Compile Include="Objects\Designer Objects\Rule.cs" />
+    <Compile Include="Objects\Designer Objects\State.cs" />
+    <Compile Include="Objects\GameDesigner.cs" />
     <Compile Include="Objects\Message Objects\Failure.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -74,7 +79,7 @@
     <Compile Include="Objects\GameBox.cs" />
     <Compile Include="Objects\GameObjectProperty.cs" />
     <Compile Include="Objects\Message Objects\ObjectMessageObject.cs" />
-    <Compile Include="GameObserver.cs" />
+    <Compile Include="Objects\GameObserver.cs" />
     <Compile Include="Objects\Message Objects\BoxMessageObject.cs" />
     <Compile Include="Objects\Message Objects\BoxResponse.cs" />
     <Compile Include="Objects\Message Objects\ObjResponse.cs" />

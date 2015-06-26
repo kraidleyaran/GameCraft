@@ -15,4 +15,3 @@ G:\GameCraft\GameCraft\GameCraft\bin\Debug\nunit.framework.xml
 G:\GameCraft\GameCraft\GameCraft\obj\x86\Debug\GameCraft.exe
 G:\GameCraft\GameCraft\GameCraft\obj\x86\Debug\GameCraft.pdb
 G:\GameCraft\GameCraft\GameCraft\bin\Debug\MonoGame.Framework.xml
-G:\GameCraft\GameCraft\GameCraft\obj\x86\Debug\GameCraft.csprojResolveAssemblyReference.cache

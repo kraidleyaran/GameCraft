@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace GameCraft.GameMaster
+﻿namespace GameCraft
 {
 	public class GameObjectProperty
 	{

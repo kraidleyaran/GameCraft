@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using GameCraft.GameMaster;
+﻿using System.Collections.Generic;
 
 namespace GameCraft
 {

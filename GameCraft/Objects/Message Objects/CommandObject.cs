@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace GameCraft
+﻿namespace GameCraft
 {
 	public enum CommandObject
 	{

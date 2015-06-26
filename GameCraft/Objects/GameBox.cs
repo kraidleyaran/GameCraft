@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections;
-using GameCraft.GameMaster;
+﻿using System.Collections.Generic;
 
-namespace GameCraft.GameMaster
+namespace GameCraft
 {
 	public class GameBox
 	{
@@ -27,11 +23,8 @@ namespace GameCraft.GameMaster
 	        {
 	            return false;
 	        }
-	        else
-	        {
-                _container.Add(name);
-	            return true;
-	        }
+	        _container.Add(name);
+	        return true;
 	    }
 
 	    public bool RemoveGameObject(string name)

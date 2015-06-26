@@ -1,19 +1,16 @@
-﻿using NUnit.Framework;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using GameCraft;
-using GameCraft.GameMaster;
-
+using NUnit.Framework;
 
 namespace GameCraftTests
 {
-	[TestFixture ()]
+	[TestFixture]
 	public class GameObjectTests
 	{
 		[TestCase(TestName="Adding a property to a gameObject via GameObjectProperty should not throw an exception")]
 		public void AddPropertyToGameObject()
 		{
-			TestDelegate _addPropertyToGameObject = new TestDelegate (_AddPropertyToGameObject);
+			TestDelegate _addPropertyToGameObject = _AddPropertyToGameObject;
 
 			Assert.DoesNotThrow (_addPropertyToGameObject);
 		}
@@ -26,7 +23,7 @@ namespace GameCraftTests
 		[TestCase(TestName="Adding a property to a gameObject via string should not throw an exception")]
 		public void AddPropertyToGameObject_StringMethod()
 		{
-			TestDelegate _addPropertyToGameObject = new TestDelegate (_AddPropertyToGameObject);
+			TestDelegate _addPropertyToGameObject = _AddPropertyToGameObject;
 
 			Assert.DoesNotThrow (_addPropertyToGameObject);
 		}

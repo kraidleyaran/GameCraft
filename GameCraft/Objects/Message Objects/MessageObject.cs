@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using GameCraft.GameMaster;
-
+﻿using System.Collections.Generic;
 
 namespace GameCraft
 {
@@ -10,11 +7,7 @@ namespace GameCraft
 		protected List<string> _receivers = new List<string>();
 		protected CommandObject _command;
 
-		public Message ()
-		{
-		}
-
-		public List<string> Receivers { 
+	    public List<string> Receivers { 
 			get{ return _receivers; }
 			set{ _receivers = value; }
 		}
