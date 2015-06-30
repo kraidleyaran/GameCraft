@@ -65,7 +65,12 @@
   <ItemGroup>
     <Compile Include="Game1.cs" />
     <Compile Include="Objects\Designer Objects\Action.cs" />
-    <Compile Include="Objects\Designer Objects\Condition.cs" />
+    <Compile Include="Objects\Designer Objects\InputCondition.cs" />
+    <Compile Include="Objects\Designer Objects\LinkedCondition.cs" />
+    <Compile Include="Objects\Designer Objects\MouseButton.cs" />
+    <Compile Include="Objects\Designer Objects\Operation.cs" />
+    <Compile Include="Objects\Designer Objects\Operator.cs" />
+    <Compile Include="Objects\Designer Objects\PropertyCondition.cs" />
     <Compile Include="Objects\Designer Objects\Rule.cs" />
     <Compile Include="Objects\Designer Objects\State.cs" />
     <Compile Include="Objects\GameDesigner.cs" />

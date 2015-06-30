@@ -4,25 +4,21 @@ namespace GameCraft
 {
 	public class ObjResponse
 	{
-		private string _objName;
-        private List<GameObjectProperty>  _objProps = new List<GameObjectProperty>();
+	    private List<GameObjectProperty>  _objProps = new List<GameObjectProperty>();
 		
 
 		public ObjResponse (string objName)
 		{
-			_objName = objName;
+			ObjName = objName;
 		}
 
 	    public ObjResponse(string objName, List<GameObjectProperty> objProps)
 	    {
-	        _objName = objName;
+	        ObjName = objName;
 	        _objProps = objProps;
 	    }
 
-	    public string ObjName
-		{
-			get {return _objName; }
-		}
+	    public string ObjName { get; private set; }
 
 	    public List<GameObjectProperty> ObjProperties
 	    {

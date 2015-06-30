@@ -2,28 +2,19 @@
 {
 	public class GameObjectProperty
 	{
-		private string _propertyName;
-		private dynamic _propertyValue;
-
-		public GameObjectProperty (string propertyName)
+	    public GameObjectProperty (string propertyName)
 		{
-			_propertyName = propertyName;
+			Name = propertyName;
 		}
-		public GameObjectProperty (string propertyName, dynamic propertyValue)
+		public GameObjectProperty (string propertyName, object propertyValue)
 		{
-			_propertyName = propertyName;
-			_propertyValue = propertyValue;
+			Name = propertyName;
+			Value = propertyValue;
 		}
 
-		public string Name {
-			get{ return _propertyName; }
-		}
+		public string Name { get; private set; }
 
-		public dynamic Value {
-			get{ return _propertyValue; }
-			set{ _propertyValue = value; }
-		}
-
+	    public object Value { get; set; }
 	}
 }
 

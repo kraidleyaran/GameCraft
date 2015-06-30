@@ -4,17 +4,14 @@ namespace GameCraft
 {
     public class Failure
     {
-        private string _name;
         private List<string> _failList = new List<string>();
 
         public Failure(string name)
         {
-            _name = name;
+            Name = name;
         }
 
-        public string Name {
-            get { return _name; }
-        }
+        public string Name { get; private set; }
 
         public List<string> FailList
         {

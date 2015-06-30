@@ -5,25 +5,21 @@ namespace GameCraft
 {
 	public class GameObject
 	{
-		private string _name;
-		private Guid _uniqueId;
+	    private Guid _uniqueId;
 		private List<GameObjectProperty> _properties = new List<GameObjectProperty>();
 
 		private List<string> _boxLocations = new List<string> ();
 
 		public GameObject (string name)
 		{
-			_name = name;
+			Name = name;
 			_uniqueId = Guid.NewGuid ();
 		}
 
 
-		public string Name
-		{
-			get { return _name; }
-		}
+		public string Name { get; private set; }
 
-		public string UniqueId
+	    public string UniqueId
 		{
 			get { return _uniqueId.ToString(); }
 		}
@@ -71,14 +67,14 @@ namespace GameCraft
 		}
 		public Receipt<List<GameObjectProperty>> AddManyProperty(List<GameObjectProperty> propertyList)
 		{
-			Receipt<List<GameObjectProperty>> returnReceipt = new Receipt<List<GameObjectProperty>>(_name, new List<GameObjectProperty>(), true);
+			Receipt<List<GameObjectProperty>> returnReceipt = new Receipt<List<GameObjectProperty>>(Name, new List<GameObjectProperty>(), true);
 			foreach (GameObjectProperty prop in propertyList) {
 				bool addPropResponse = AddProperty (prop);
 				if (addPropResponse) {
 					returnReceipt.Response.Add (prop);
 				} else {
 					Failure newFail = new Failure(prop.Name);
-                    newFail.FailList.Add("Property already exists in GameObject " + _name);
+                    newFail.FailList.Add("Property already exists in GameObject " + Name);
                     returnReceipt.Failures.Add (newFail);
 				}
 
@@ -105,14 +101,14 @@ namespace GameCraft
 		}
 		public Receipt<List<GameObjectProperty>> RemoveManyProperty(List<string> propNameList)
 		{
-			Receipt<List<GameObjectProperty>> returnReceipt = new Receipt<List<GameObjectProperty>> (_name, new List<GameObjectProperty>(), true);
+			Receipt<List<GameObjectProperty>> returnReceipt = new Receipt<List<GameObjectProperty>> (Name, new List<GameObjectProperty>(), true);
 			foreach (string name in propNameList) {				
 				if (HasProperty (name)) {
 					returnReceipt.Response.Add (GetProperty (name).Response);
 					RemoveProperty (name);
 				} else {
                     Failure newFail = new Failure(name);
-                    newFail.FailList.Add("Property does not exist on GameObject " + _name);
+                    newFail.FailList.Add("Property does not exist on GameObject " + Name);
 					returnReceipt.Failures.Add (newFail);
 				}
 			}
@@ -130,13 +126,13 @@ namespace GameCraft
 		}
 		public Receipt<List<GameObjectProperty>> SetManyProperty(List<GameObjectProperty> propList)
 		{
-			Receipt<List<GameObjectProperty>> returnReceipt = new Receipt<List<GameObjectProperty>> (_name, new List<GameObjectProperty> (), true);
+			Receipt<List<GameObjectProperty>> returnReceipt = new Receipt<List<GameObjectProperty>> (Name, new List<GameObjectProperty> (), true);
 			foreach (GameObjectProperty prop in propList) {
 				if (SetProperty (prop)) {
 					returnReceipt.Response.Add (prop);
 				} else {
                     Failure newFail = new Failure(prop.Name);
-                    newFail.FailList.Add("Does not exist in GameObject " + _name);
+                    newFail.FailList.Add("Does not exist in GameObject " + Name);
                     returnReceipt.Failures.Add(newFail);
 				}
 			}
@@ -159,24 +155,24 @@ namespace GameCraft
 
 			if (doesPropExist) {
 				returnProperty = _properties.Find (prop => prop.Name == propName);
-			    return new Receipt<GameObjectProperty> (_name, returnProperty, doesPropExist);
+			    return new Receipt<GameObjectProperty> (Name, returnProperty, doesPropExist);
 			}
 		    Failure newFail = new Failure(propName);
-		    newFail.FailList.Add("Does not exist on " + _name + " GameObject");
-		    Receipt<GameObjectProperty> returnReceipt = new Receipt<GameObjectProperty>(_name, new GameObjectProperty(propName), false);
+		    newFail.FailList.Add("Does not exist on " + Name + " GameObject");
+		    Receipt<GameObjectProperty> returnReceipt = new Receipt<GameObjectProperty>(Name, new GameObjectProperty(propName), false);
 		    returnReceipt.Failures.Add (newFail);
 		    return returnReceipt;
 		}
 		public Receipt<List<GameObjectProperty>> GetManyProperty(List<string> propNameList)
 		{
-			Receipt<List<GameObjectProperty>> returnReceipt = new Receipt<List<GameObjectProperty>> (_name, new List<GameObjectProperty> (), true);
+			Receipt<List<GameObjectProperty>> returnReceipt = new Receipt<List<GameObjectProperty>> (Name, new List<GameObjectProperty> (), true);
 			foreach (string propName in propNameList) {
 				Receipt<GameObjectProperty> getResponse = GetProperty (propName);
 				if (getResponse.Status) {
 					returnReceipt.Response.Add (getResponse.Response);
 				} else {
                     Failure newFail = new Failure(propName);
-                    newFail.FailList.Add("Does not exist in GameObject " + _name);
+                    newFail.FailList.Add("Does not exist in GameObject " + Name);
 					returnReceipt.Failures.Add (newFail);
 				}
 			}

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using GameCraft;
 using NUnit.Framework;
 
@@ -112,12 +113,9 @@ namespace GameCraftTests
             ObjectMessage getMessage = new ObjectMessage(CommandObject.get, getProperty);
             getMessage.Receivers.Add(newGameObject.Name);
 	        Receipt<List<ObjResponse>> newReceipt = Observer.SendMessage(getMessage);
-	        foreach (ObjResponse response in newReceipt.Response)
+	        foreach (GameObjectProperty prop in newReceipt.Response.SelectMany(response => response.ObjProperties))
 	        {
-	            foreach (GameObjectProperty prop in response.ObjProperties)
-	            {
-	                Assert.IsTrue(prop.Value);
-	            }
+	            Assert.AreEqual(true,prop.Value);
 	        }
 
 	    }

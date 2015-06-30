@@ -4,35 +4,20 @@ namespace GameCraft
 {
 	public class Receipt<ObjValueType>
 	{
-		private string _receiverName;
-		private ObjValueType _response;
-		private bool _status;
-		private List<Failure> _failures;
-
-		public Receipt(string receiverName, ObjValueType response, bool status)
+	    public Receipt(string receiverName, ObjValueType response, bool status)
 		{
-			_receiverName = receiverName;
-			_response = response;
-			_status = status;
-			_failures = new List<Failure> ();
+			ReceiverName = receiverName;
+			Response = response;
+			Status = status;
+			Failures = new List<Failure> ();
 		}
-		public string ReceiverName{
-			get { return _receiverName; }
-		}
+		public string ReceiverName { get; private set; }
 
-		public ObjValueType Response{
-			get { return _response; }
-		}
-		public bool Status{
-			get { return _status; }
-            set { _status = value; }
-		}
-		public List<Failure> Failures
-		{
-			get { return _failures; }
-			set { _failures = value; }
-		}
+	    public ObjValueType Response { get; private set; }
 
+	    public bool Status { get; set; }
+
+	    public List<Failure> Failures { get; set; }
 	}
 }
 

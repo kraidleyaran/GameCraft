@@ -30,6 +30,11 @@ namespace GameCraft
 			return true;
 		}
 
+	    public List<GameObject> ObjList
+	    {
+            get { return _objList;}
+	    }
+
 	    public Receipt<GameObject> RegisterGameObject(GameObject newGameObject)
 	    {
 	        Receipt<GameObject> returnReceipt = new Receipt<GameObject>(_name, newGameObject, false);
