@@ -4,7 +4,8 @@ using System.Linq;
 using GameCraft.Designer;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using Action = GameCraft.Designer.Action;
+using NUnit.Framework;
+using Action = GameCraft.Designer.ObjectAction;
 
 namespace GameCraft
 {
@@ -30,6 +31,8 @@ namespace GameCraft
 
         public State CurrentState { get; set; }
 
+        public List<State> StateList { get; set; }
+
         public void Update()
         {
             KeyboardState keyboardState = Keyboard.GetState();
@@ -46,9 +49,10 @@ namespace GameCraft
                         conditionLengths.Where(conditionLength => conditionLength.Value > 0))
                 {
                     var rule1 = rule;
-                    System.Action executeAction = () =>
+                    
+                    System.Action ObjectAction = () =>
                     {
-                        foreach (KeyValuePair<string, Action> action in rule1.Value.Actions)
+                        foreach (KeyValuePair<string, Action> action in rule1.Value.ObjectActions)
                         {
                             switch (action.Value.Operation)
                             {
@@ -58,8 +62,8 @@ namespace GameCraft
 
                                     Receipt<GameObjectProperty> getReceipt =
                                         addGameObject.GetProperty(action.Value.Property);
-                                    Object addNewValue = (double) getReceipt.Response.Value +
-                                                         (double) action.Value.SetValue;
+                                    Object addNewValue = Convert.ToDouble(getReceipt.Response.Value) +
+                                                         Convert.ToDouble(action.Value.SetValue);
 
                                     GameObjectProperty addGameObjectProperty =
                                         new GameObjectProperty(action.Value.Property, addNewValue);
@@ -76,8 +80,8 @@ namespace GameCraft
 
                                     Receipt<GameObjectProperty> getSubtractReceipt =
                                         subtractGameObject.GetProperty(action.Value.Property);
-                                    Object subtractNewValue = (double) getSubtractReceipt.Response.Value -
-                                                              (double) action.Value.SetValue;
+                                    Object subtractNewValue = Convert.ToDouble(getSubtractReceipt.Response.Value) -
+                                                              Convert.ToDouble(action.Value.SetValue);
 
                                     GameObjectProperty subtractGameObjectProperty =
                                         new GameObjectProperty(action.Value.Property, subtractNewValue);
@@ -93,6 +97,7 @@ namespace GameCraft
                                         new GameObjectProperty(action.Value.Property, action.Value.SetValue);
                                     ObjectMessage setNewMessage = new ObjectMessage(CommandObject.set,
                                         setGameObjectProperty);
+                                    setNewMessage.Receivers.Add(action.Value.TargetObj);
 
                                     Observer.SendMessage(setNewMessage);
                                     break;
@@ -103,8 +108,8 @@ namespace GameCraft
 
                                     Receipt<GameObjectProperty> getMultiplyReceipt =
                                         multiplyGameObject.GetProperty(action.Value.Property);
-                                    Object multiplyNewValue = (double) getMultiplyReceipt.Response.Value*
-                                                              (double) action.Value.SetValue;
+                                    Object multiplyNewValue = Convert.ToDouble(getMultiplyReceipt.Response.Value) *
+                                                              Convert.ToDouble(action.Value.SetValue);
 
                                     GameObjectProperty multiplyGameObjectProperty =
                                         new GameObjectProperty(action.Value.Property, multiplyNewValue);
@@ -121,8 +126,8 @@ namespace GameCraft
 
                                     Receipt<GameObjectProperty> getDivideReceipt =
                                         divideGameObject.GetProperty(action.Value.Property);
-                                    Object divideNewValue = (double) getDivideReceipt.Response.Value*
-                                                            (double) action.Value.SetValue;
+                                    Object divideNewValue = Convert.ToDouble(getDivideReceipt.Response.Value) /
+                                                            Convert.ToDouble(action.Value.SetValue);
 
                                     GameObjectProperty divideGameObjectProperty =
                                         new GameObjectProperty(action.Value.Property, divideNewValue);
@@ -134,6 +139,28 @@ namespace GameCraft
                                     break;
                             }
                         }
+                    };
+                    System.Action GraphicAction = () =>
+                    {
+                        foreach (var pair in rule1.Value.GraphicActions)
+                        {
+                            GameObject drawGameObject = Observer.ObjList.Find(obj => obj.Name == pair.Value.TargetObj);
+                            List<string> drawProps = new List<string>
+                            {
+                                "Animation", "PositionX", "PositionY"
+                            };
+                            Receipt<List<GameObjectProperty>> getPositionReceipt = drawGameObject.GetManyProperty(drawProps);
+                            float PositionX = Convert.ToSingle(getPositionReceipt.Response.Find(prop => prop.Name == "PositionX").Value);
+                            float PositionY = Convert.ToSingle(getPositionReceipt.Response.Find(prop => prop.Name == "PositionY").Value);
+                            
+                            Drawable drawObject = new Drawable(drawGameObject.Name, getPositionReceipt.Response.Find(prop => prop.Name == "Animation").Value.ToString(),new Vector2(PositionX, PositionY), pair.Value.PlayCount);
+                            Observer.DrawList.Add(drawObject);
+                        }
+                    };
+                    System.Action executeActions = () =>
+                    {
+                        ObjectAction();
+                        GraphicAction();
                     };
                     switch (conditionLength.Key)
                     {
@@ -151,12 +178,12 @@ namespace GameCraft
                                                 {
                                                     case MouseButton.Left:
                                                         if (mouseState.LeftButton != ButtonState.Pressed) continue;
-                                                        executeAction();
+                                                        executeActions();
                                                         break;
                                              
                                                     case MouseButton.Right:
                                                         if (mouseState.LeftButton != ButtonState.Pressed) continue;
-                                                        executeAction();
+                                                        executeActions();
                                                         break;
                                                 }
                                                 break;
@@ -165,12 +192,12 @@ namespace GameCraft
                                                 {
                                                     case MouseButton.Left:
                                                         if (mouseState.LeftButton == ButtonState.Pressed) continue;
-                                                        executeAction();
+                                                        executeActions();
                                                         break;
 
                                                     case MouseButton.Right:
                                                         if (mouseState.LeftButton == ButtonState.Pressed) continue;
-                                                        executeAction();
+                                                        executeActions();
                                                         break;
                                                 }
                                                 break;
@@ -184,12 +211,12 @@ namespace GameCraft
                                                 {
                                                     case MouseButton.Left:
                                                         if (mouseState.LeftButton == ButtonState.Pressed) continue;
-                                                        executeAction();
+                                                        executeActions();
                                                         break;
 
                                                     case MouseButton.Right:
                                                         if (mouseState.LeftButton == ButtonState.Pressed) continue;
-                                                        executeAction();
+                                                        executeActions();
                                                         break;
                                                 }
                                                 break;
@@ -198,12 +225,12 @@ namespace GameCraft
                                                 {
                                                     case MouseButton.Left:
                                                         if (mouseState.LeftButton != ButtonState.Pressed) continue;
-                                                        executeAction();
+                                                        executeActions();
                                                         break;
 
                                                     case MouseButton.Right:
                                                         if (mouseState.LeftButton != ButtonState.Pressed) continue;
-                                                        executeAction();
+                                                        executeActions();
                                                         break;
                                                 }
                                                 break;
@@ -226,11 +253,11 @@ namespace GameCraft
                                         {
                                             case KeyState.Down:
                                                 if (!keyboardState.IsKeyDown(condition.Value.Input)) continue;
-                                                executeAction();
+                                                executeActions();
                                                 break;
                                             case KeyState.Up:
                                                 if (!keyboardState.IsKeyDown(condition.Value.Input)) continue;
-                                                executeAction();
+                                                executeActions();
                                                 break;
                                         }
                                         break;
@@ -239,11 +266,11 @@ namespace GameCraft
                                         {
                                             case KeyState.Down:
                                                 if (keyboardState.IsKeyDown(condition.Value.Input)) continue;
-                                                executeAction();
+                                                executeActions();
                                                 break;
                                             case KeyState.Up:
                                                 if (keyboardState.IsKeyDown(condition.Value.Input)) continue;
-                                                executeAction();
+                                                executeActions();
                                                 break;
                                         }
                                         break;
@@ -265,40 +292,41 @@ namespace GameCraft
                             foreach (KeyValuePair<string, PropertyCondition> condition in rule.Value.PropertyConditions)
                             {
                                 GameObject getGameObject = Observer.ObjList.Find(o => o.Name == condition.Value.TargetName);
+                                if (getGameObject == null) continue;
                                 Receipt<GameObjectProperty> objProp = getGameObject.GetProperty(condition.Value.Property);
                                 switch (condition.Value.Operator)
                                 {
                                     case Operator.Contains:
                                         if (!objProp.Response.Value.ToString().Contains(condition.Value.CompareValue.ToString())) continue;
-                                        executeAction();
+                                        executeActions();
                                         break;
                                     case Operator.DoesNotContain:
                                         if (objProp.Response.Value.ToString().Contains(condition.Value.CompareValue.ToString())) continue;
-                                        executeAction();
+                                        executeActions();
                                         break;
                                     case Operator.Equal:
-                                        if (objProp.Response.Value != condition.Value.CompareValue) continue;
-                                        executeAction();
+                                        if (objProp.Response.Value.ToString() != condition.Value.CompareValue.ToString()) continue;
+                                        executeActions();
                                         break;
                                     case Operator.NotEqual:
-                                        if (objProp.Response.Value == condition.Value.CompareValue) continue;
-                                        executeAction();
+                                        if (objProp.Response.Value.ToString() == condition.Value.CompareValue.ToString()) continue;
+                                        executeActions();
                                         break;
                                     case Operator.Greater:
-                                        if (!((double) objProp.Response.Value > (double) condition.Value.CompareValue)) continue;
-                                        executeAction();
+                                        if (!((double)objProp.Response.Value > (double)condition.Value.CompareValue)) continue;
+                                        executeActions();
                                         break;
                                     case Operator.GreaterThanOrEqual:
                                         if (!((double)objProp.Response.Value >= (double)condition.Value.CompareValue)) continue;
-                                        executeAction();
+                                        executeActions();
                                         break;
                                     case Operator.LessThan:
                                         if (!((double)objProp.Response.Value < (double)condition.Value.CompareValue)) continue;
-                                        executeAction();
+                                        executeActions();
                                         break;
                                     case Operator.LessThanOrEqual:
                                         if (!((double)objProp.Response.Value <= (double)condition.Value.CompareValue)) continue;
-                                        executeAction();
+                                        executeActions();
                                         break;
                                 }
                             }

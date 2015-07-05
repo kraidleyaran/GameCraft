@@ -8,6 +8,9 @@ namespace GameCraft
 
 		private List<GameBox> _boxList = new List<GameBox>();
         private List<GameObject> _objList = new List<GameObject>();
+        private List<Drawable>  _drawables = new List<Drawable>();
+
+
 	    private const string _name = "GameObserver";
 
 	    static GameObserver ()
@@ -34,6 +37,8 @@ namespace GameCraft
 	    {
             get { return _objList;}
 	    }
+
+        public List<Drawable> DrawList { get { return _drawables;} private set { _drawables = value; } }
 
 	    public Receipt<GameObject> RegisterGameObject(GameObject newGameObject)
 	    {

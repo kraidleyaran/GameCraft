@@ -18,11 +18,12 @@ namespace GameCraft.Designer
 
         private Dictionary<string, LinkedCondition> _linkedConditions = new Dictionary<string, LinkedCondition>();
 
-        private Dictionary<string, Action> _actions = new Dictionary<string, Action>();
+        private Dictionary<string, ObjectAction> _objectActions = new Dictionary<string, ObjectAction>();
 
         public Rule(string name)
         {
             Name = name;
+            GraphicActions = new Dictionary<string, GraphicAction>();
         }
 
         public string Name { get; private set; }
@@ -75,7 +76,9 @@ namespace GameCraft.Designer
             set { _linkedConditions = value; }
         }
 
-        public Dictionary<string, Action> Actions { get{return _actions;} set { _actions = value; } }
+        public Dictionary<string, ObjectAction> ObjectActions { get{return _objectActions;} set { _objectActions = value; } }
+
+        public Dictionary<string, GraphicAction> GraphicActions { get; set; }
 
         public Dictionary<string, int> GetConditionLengths()
         {

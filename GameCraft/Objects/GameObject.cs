@@ -5,7 +5,7 @@ namespace GameCraft
 {
 	public class GameObject
 	{
-	    private Guid _uniqueId;
+	    protected Guid _uniqueId;
 		private List<GameObjectProperty> _properties = new List<GameObjectProperty>();
 
 		private List<string> _boxLocations = new List<string> ();
@@ -16,14 +16,22 @@ namespace GameCraft
 			_uniqueId = Guid.NewGuid ();
 		}
 
+	    public GameObject(string name, List<GameObjectProperty> propList)
+	    {
+	        Name = name;
+	        _uniqueId = Guid.NewGuid();
+	        AddManyProperty(propList);
+	    }
 
-		public string Name { get; private set; }
+
+		public string Name { get; protected set; }
 
 	    public string UniqueId
 		{
 			get { return _uniqueId.ToString(); }
 		}
 		public List<string> Locations
+
 		{
 			get { return _boxLocations; }
 		}
@@ -47,23 +55,21 @@ namespace GameCraft
 			bool doesPropExist = HasProperty (gameObjProp);
 			bool response = false;
 
-			if (doesPropExist == false) {
-				_properties.Add  (gameObjProp);
-				response = true;
-			}
-			return response;
+		    if (doesPropExist != false) return response;
+		    _properties.Add  (gameObjProp);
+		    response = true;
+		    return response;
 		}
 		public bool AddProperty(string propName)
 		{
 			bool doesPropExist = HasProperty (propName);
 			bool response = false;
 
-			if (doesPropExist == false) {
-				GameObjectProperty newGameObjProperty = new GameObjectProperty (propName, null);
-				_properties.Add (newGameObjProperty);
-				response = true;
-			}
-			return response;
+		    if (doesPropExist != false) return response;
+		    GameObjectProperty newGameObjProperty = new GameObjectProperty (propName, null);
+		    _properties.Add (newGameObjProperty);
+		    response = true;
+		    return response;
 		}
 		public Receipt<List<GameObjectProperty>> AddManyProperty(List<GameObjectProperty> propertyList)
 		{
@@ -92,12 +98,11 @@ namespace GameCraft
 		{
 			bool doesPropExist = HasProperty (propName);
 
-			if (doesPropExist) {
-				GameObjectProperty removeProp = _properties.Find (prop => prop.Name == propName);;
-				_properties.Remove (removeProp);
-			}
+		    if (!doesPropExist) return doesPropExist;
+		    GameObjectProperty removeProp = _properties.Find (prop => prop.Name == propName);;
+		    _properties.Remove (removeProp);
 
-			return doesPropExist;
+		    return doesPropExist;
 		}
 		public Receipt<List<GameObjectProperty>> RemoveManyProperty(List<string> propNameList)
 		{
@@ -159,7 +164,7 @@ namespace GameCraft
 			}
 		    Failure newFail = new Failure(propName);
 		    newFail.FailList.Add("Does not exist on " + Name + " GameObject");
-		    Receipt<GameObjectProperty> returnReceipt = new Receipt<GameObjectProperty>(Name, new GameObjectProperty(propName), false);
+            Receipt<GameObjectProperty> returnReceipt = new Receipt<GameObjectProperty>(Name, returnProperty, false);
 		    returnReceipt.Failures.Add (newFail);
 		    return returnReceipt;
 		}

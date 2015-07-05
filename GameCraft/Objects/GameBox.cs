@@ -16,7 +16,7 @@ namespace GameCraft
 			get { return _name; }
 		}
 
-	    public bool AddGameObject(string name)
+	    public bool Add(string name)
 	    {
 	        bool objExists = _container.Contains(name);
 	        if (objExists)
@@ -27,9 +27,14 @@ namespace GameCraft
 	        return true;
 	    }
 
-	    public bool RemoveGameObject(string name)
+	    public bool Remove(string name)
 	    {
 	        return _container.Remove(name);
+	    }
+
+	    public bool Contains(string name)
+	    {
+	        return _container.Contains(name);
 	    }
 
 	}

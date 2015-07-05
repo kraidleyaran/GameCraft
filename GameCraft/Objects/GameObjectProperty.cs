@@ -1,4 +1,7 @@
-﻿namespace GameCraft
+﻿using System;
+using System.Reflection.Emit;
+
+namespace GameCraft
 {
 	public class GameObjectProperty
 	{

@@ -3,6 +3,9 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using GameCraft;
+using GameCraft.Designer;
+using Microsoft.Xna.Framework.Content;
 
 #endregion
 
@@ -15,12 +18,21 @@ namespace GameCraft
 	{
 		GraphicsDeviceManager graphics;
 		SpriteBatch spriteBatch;
+        GameGraphics gameGraphics;
+	    private DummyGame dummyGame;
+	    private GameDesigner gameDesigner;
+	    private GameObserver gameObserver;
 
 		public Game1 ()
 		{
-			graphics = new GraphicsDeviceManager (this);
-			Content.RootDirectory = "Content";	            
-			graphics.IsFullScreen = false;		
+            gameGraphics = new GameGraphics(this);
+		    gameDesigner = GameDesigner.Instance;
+		    graphics = gameGraphics.DeviceManager;
+			gameObserver = GameObserver.Instance;
+            dummyGame = new DummyGame();
+
+            Content.RootDirectory = "Content";	            
+			graphics.IsFullScreen = false;
 		}
 
 		/// <summary>
@@ -31,6 +43,9 @@ namespace GameCraft
 		/// </summary>
 		protected override void Initialize ()
 		{
+            gameDesigner.CurrentState = dummyGame.GameState;
+            gameObserver.RegisterGameObject(dummyGame.alexObject);
+            IsFixedTimeStep = false;
 			// TODO: Add your initialization logic here
 			base.Initialize ();
 				
@@ -44,8 +59,11 @@ namespace GameCraft
 		{
 			// Create a new SpriteBatch, which can be used to draw textures.
 			spriteBatch = new SpriteBatch (GraphicsDevice);
+            gameGraphics.SetSpriteBatch(spriteBatch);
+            gameGraphics.LoadContent(dummyGame.BlueMageStanding);
 
-			//TODO: use this.Content to load your game content here 
+
+		    //TODO: use this.Content to load your game content here 
 		}
 
 		/// <summary>
@@ -55,7 +73,8 @@ namespace GameCraft
 		/// <param name="gameTime">Provides a snapshot of timing values.</param>
 		protected override void Update (GameTime gameTime)
 		{
-			// For Mobile devices, this logic will close the Game when the Back button is pressed
+		    
+            // For Mobile devices, this logic will close the Game when the Back button is pressed
 			// Exit() is obsolete on iOS
 			#if !__IOS__
 			if (GamePad.GetState (PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
@@ -63,7 +82,12 @@ namespace GameCraft
 				Exit ();
 			}
 			#endif
-			// TODO: Add your update logic here			
+			// TODO: Add your update logic here
+
+            gameDesigner.Update();
+            gameGraphics.Update(gameTime);
+            
+		    
 			base.Update (gameTime);
 		}
 
@@ -73,8 +97,11 @@ namespace GameCraft
 		/// <param name="gameTime">Provides a snapshot of timing values.</param>
 		protected override void Draw (GameTime gameTime)
 		{
+            
 			graphics.GraphicsDevice.Clear (Color.CornflowerBlue);
-		
+		    gameGraphics.SpriteBatch.Begin();
+            gameGraphics.Draw();
+            gameGraphics.SpriteBatch.End();
 			//TODO: Add your drawing code here
             
 			base.Draw (gameTime);

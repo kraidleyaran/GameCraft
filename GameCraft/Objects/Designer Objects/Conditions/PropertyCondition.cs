@@ -10,6 +10,15 @@ namespace GameCraft.Designer
             
         }
 
+        public PropertyCondition(string name, string targetName, string property, Operator inOperator, object compareValue)
+        {
+            Name = name;
+            TargetName = targetName;
+            Property = property;
+            Operator = inOperator;
+            CompareValue = compareValue;
+        }
+
         public string Name { get; private set; }
 
         public string TargetName { get; set; }

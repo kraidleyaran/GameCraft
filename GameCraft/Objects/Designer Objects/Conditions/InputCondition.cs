@@ -10,6 +10,14 @@ namespace GameCraft.Designer
             
         }
 
+        public InputCondition(string name, InputType input, InputState compareValue, Operator inOperater)
+        {
+            Name = name;
+            Input = input;
+            CompareValue = compareValue;
+            Operator = inOperater;
+        }
+
         public string Name { get; private set; }
 
         public InputType Input { get; set; }
