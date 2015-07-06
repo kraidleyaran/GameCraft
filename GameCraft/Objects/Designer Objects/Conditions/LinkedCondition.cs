@@ -7,11 +7,11 @@ namespace GameCraft.Designer
     public class LinkedCondition
     {
         private Dictionary<string, InputCondition<MouseButton, ButtonState>> _mouseButtonConditions = new Dictionary<string, InputCondition<MouseButton, ButtonState>>();
-        private Dictionary<string, InputCondition<Point, Point>> _mouseMovementConditions = new Dictionary<string, InputCondition<Point, Point>>();
+        private Dictionary<string, MouseMoveCondition> _mouseMovementConditions = new Dictionary<string, MouseMoveCondition>();
         private Dictionary<string, InputCondition<Keys, KeyState>> _keyInputConditions = new Dictionary<string, InputCondition<Keys, KeyState>>();
         private Dictionary<string, InputCondition<Buttons, ButtonState>> _gamePadButtonConditions = new Dictionary<string, InputCondition<Buttons, ButtonState>>();
-        private Dictionary<string, InputCondition<Vector2, Vector2>> _gamePadThumbStickConditions = new Dictionary<string, InputCondition<Vector2, Vector2>>();
-        private Dictionary<string, InputCondition<float, float>> _gamePadTriggerConditions = new Dictionary<string, InputCondition<float, float>>();
+        private Dictionary<string, GamePadThumbStickCondition> _gamePadThumbStickConditions = new Dictionary<string, GamePadThumbStickCondition>();
+        private Dictionary<string, GamePadTriggerCondition> _gamePadTriggerConditions = new Dictionary<string, GamePadTriggerCondition>();
 
         private Dictionary<string, PropertyCondition> _propertyConditions = new Dictionary<string, PropertyCondition>();
         public LinkedCondition(string name)
@@ -26,7 +26,7 @@ namespace GameCraft.Designer
             set { _mouseButtonConditions = value; }
         }
 
-        public Dictionary<string, InputCondition<Point, Point>> MouseMovementConditions
+        public Dictionary<string, MouseMoveCondition> MouseMovementConditions
         {
             get { return _mouseMovementConditions; }
             set { _mouseMovementConditions = value; }
@@ -44,13 +44,13 @@ namespace GameCraft.Designer
             set { _gamePadButtonConditions = value; }
         }
 
-        public Dictionary<string, InputCondition<Vector2, Vector2>> GamePadThumbStickConditions
+        public Dictionary<string, GamePadThumbStickCondition> GamePadThumbStickConditions
         {
             get { return _gamePadThumbStickConditions; }
             set { _gamePadThumbStickConditions = value; }
         }
 
-        public Dictionary<string, InputCondition<float, float>> GamePadTriggerConditions
+        public Dictionary<string, GamePadTriggerCondition> GamePadTriggerConditions
         {
             get { return _gamePadTriggerConditions; }
             set { _gamePadTriggerConditions = value; }

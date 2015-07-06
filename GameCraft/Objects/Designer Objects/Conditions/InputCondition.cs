@@ -18,7 +18,7 @@ namespace GameCraft.Designer
             Operator = inOperater;
         }
 
-        public string Name { get; private set; }
+        public string Name { get; protected set; }
 
         public InputType Input { get; set; }
         public InputState CompareValue { get; set; }
