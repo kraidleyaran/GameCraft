@@ -149,6 +149,10 @@ namespace GameCraft
                             Observer.DrawList.Add(drawObject);
                         }
                     };
+                    System.Action SoundAction = () =>
+                    {
+
+                    };
                     System.Action executeActions = () =>
                     {
                         ObjectAction();

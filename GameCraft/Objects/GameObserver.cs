@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using GameCraft.SoundObjects;
 
 namespace GameCraft
 {
@@ -9,6 +10,7 @@ namespace GameCraft
 		private List<GameBox> _boxList = new List<GameBox>();
         private List<GameObject> _objList = new List<GameObject>();
         private List<Drawable>  _drawables = new List<Drawable>();
+        private List<Hearable> _soundList = new List<Hearable>();
 
 
 	    private const string _name = "GameObserver";
@@ -26,12 +28,7 @@ namespace GameCraft
 			}
 		}
 
-		public bool Clear()
-		{
-			_boxList = new List<GameBox> ();
-            _objList = new List<GameObject>();
-			return true;
-		}
+
 
 	    public List<GameObject> ObjList
 	    {
@@ -40,6 +37,13 @@ namespace GameCraft
 
         public List<Drawable> DrawList { get { return _drawables;} private set { _drawables = value; } }
 
+        public List<Hearable> SoundList { get { return _soundList; } }
+        public bool Clear()
+        {
+            _boxList = new List<GameBox>();
+            _objList = new List<GameObject>();
+            return true;
+        }
 	    public Receipt<GameObject> RegisterGameObject(GameObject newGameObject)
 	    {
 	        Receipt<GameObject> returnReceipt = new Receipt<GameObject>(_name, newGameObject, false);

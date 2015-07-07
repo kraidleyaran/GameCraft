@@ -56,7 +56,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AnimationGenericObjectTests.cs" />
-    <Compile Include="DataConnectionTests.cs" />
     <Compile Include="GameObjectTests.cs" />
     <Compile Include="GameObserverTests.cs" />
   </ItemGroup>

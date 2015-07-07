@@ -2,6 +2,6 @@
 {
     public enum ActionType
     {
-        GameObject, Graphic, GameState
+        GameObject, Graphic, GameState, Sound
     }
 }
