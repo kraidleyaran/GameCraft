@@ -1,11 +1,12 @@
 ﻿#region Using Statements
 
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using GameCraft.Archive;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using GameCraft;
-using GameCraft.Designer;
-using Microsoft.Xna.Framework.Content;
 
 #endregion
 
@@ -22,17 +23,22 @@ namespace GameCraft
 	    private DummyGame dummyGame;
 	    private GameDesigner gameDesigner;
 	    private GameObserver gameObserver;
+	    private GameArchive gameArchive;
+        TimeSpan oneSecond = new TimeSpan(0, 0, 1);
 
 		public Game1 ()
 		{
             gameGraphics = new GameGraphics(this);
 		    gameDesigner = GameDesigner.Instance;
+		    gameArchive = GameArchive.Instance;
 		    graphics = gameGraphics.DeviceManager;
 			gameObserver = GameObserver.Instance;
             dummyGame = new DummyGame();
 
             Content.RootDirectory = "Content";	            
 			graphics.IsFullScreen = false;
+            graphics.PreferredBackBufferHeight = 720;
+		    graphics.PreferredBackBufferWidth = 1280;
 		}
 
 		/// <summary>
@@ -45,7 +51,10 @@ namespace GameCraft
 		{
             gameDesigner.CurrentState = dummyGame.GameState;
             gameObserver.RegisterGameObject(dummyGame.alexObject);
+		    gameObserver.RegisterGameObject(dummyGame.collideObject);
+		    gameDesigner.CurrentState = dummyGame.GameState;
             IsFixedTimeStep = false;
+            
 			// TODO: Add your initialization logic here
 			base.Initialize ();
 				
@@ -61,6 +70,7 @@ namespace GameCraft
 			spriteBatch = new SpriteBatch (GraphicsDevice);
             gameGraphics.SetSpriteBatch(spriteBatch);
             gameGraphics.LoadContent(dummyGame.BlueMageStanding);
+            gameGraphics.LoadContent(dummyGame.BlueMageRightWalking);
 
 
 		    //TODO: use this.Content to load your game content here 
@@ -83,9 +93,13 @@ namespace GameCraft
 			}
 			#endif
 			// TODO: Add your update logic here
-
-            gameDesigner.Update();
-            gameGraphics.Update(gameTime);
+            
+            if ((gameTime.TotalGameTime - gameTime.ElapsedGameTime) >= oneSecond)
+		    {
+                gameDesigner.Update(gameTime);
+                gameGraphics.Update(gameTime);    
+		    }
+            
             
 		    
 			base.Update (gameTime);
@@ -98,7 +112,7 @@ namespace GameCraft
 		protected override void Draw (GameTime gameTime)
 		{
             
-			graphics.GraphicsDevice.Clear (Color.CornflowerBlue);
+			graphics.GraphicsDevice.Clear (Color.DarkGray);
 		    gameGraphics.SpriteBatch.Begin();
             gameGraphics.Draw();
             gameGraphics.SpriteBatch.End();

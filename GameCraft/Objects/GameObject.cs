@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace GameCraft
 {
+    [Serializable]
 	public class GameObject
 	{
 	    protected Guid _uniqueId;
@@ -10,21 +11,25 @@ namespace GameCraft
 
 		private List<string> _boxLocations = new List<string> ();
 
-		public GameObject (string name)
+		public GameObject (string name, string type)
 		{
+		    Type = type;
 			Name = name;
 			_uniqueId = Guid.NewGuid ();
 		}
 
-	    public GameObject(string name, List<GameObjectProperty> propList)
+	    public GameObject(string name, List<GameObjectProperty> propList,string type)
 	    {
 	        Name = name;
+	        Type = type;
 	        _uniqueId = Guid.NewGuid();
 	        AddManyProperty(propList);
 	    }
 
 
 		public string Name { get; protected set; }
+
+        public string Type { get; set; }
 
 	    public string UniqueId
 		{
@@ -184,6 +189,16 @@ namespace GameCraft
 
 			return returnReceipt;
 		}
+
+        public Receipt<List<GameObjectProperty>> GetAllProperties()
+        {
+            return new Receipt<List<GameObjectProperty>>(Name, _properties, true);
+        }
+
+	    public GameObject CloneGameObject(string name)
+	    {
+            return new GameObject(name, _properties, Type);
+	    }
 
 	}
 

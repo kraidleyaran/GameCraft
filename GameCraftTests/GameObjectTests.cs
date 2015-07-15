@@ -16,7 +16,7 @@ namespace GameCraftTests
 		}
 		public void _AddPropertyToGameObject()
 		{
-			GameObject newGameObject = new GameObject ("new game object");
+            GameObject newGameObject = new GameObject("new game object", "test");
 			GameObjectProperty newGameObjProperty = new GameObjectProperty ("test property");
 			Assert.IsTrue (newGameObject.AddProperty (newGameObjProperty));
 		}
@@ -29,13 +29,13 @@ namespace GameCraftTests
 		}
 		public void _AddPropertyToGameObject_StringMethod()
 		{
-			GameObject newGameObject = new GameObject ("new game object");
+            GameObject newGameObject = new GameObject("new game object", "test");
 			Assert.IsTrue (newGameObject.AddProperty ("test property"));
 		}
 		[TestCase(TestName="Adding a property via GameObjectProperty that already exists should return false")]
 		public void AddPropertyThatAlreadyExists_ReturnFalse()
 		{
-			GameObject newGameObject = new GameObject ("new game object");
+            GameObject newGameObject = new GameObject("new game object", "test");
 			GameObjectProperty newGameObjProperty = new GameObjectProperty ("test property");
 			newGameObject.AddProperty (newGameObjProperty);
 
@@ -44,7 +44,7 @@ namespace GameCraftTests
 		[TestCase(TestName="Adding a property via string that already exists should return false")]
 		public void AddPropertyNameThatAlreadyExists_ReturnFalse()
 		{
-			GameObject newGameObject = new GameObject ("new game object");
+            GameObject newGameObject = new GameObject("new game object", "test");
 			newGameObject.AddProperty ("new property");
 
 			Assert.IsFalse (newGameObject.AddProperty ("new property"));
@@ -52,7 +52,7 @@ namespace GameCraftTests
 		[TestCase(TestName="Removing a property from a GameObject via GameObjectProperty should work succesfully")]
 		public void RemovePropertyFromGameObject()
 		{
-			GameObject newGameObject = new GameObject ("new game object");
+            GameObject newGameObject = new GameObject("new game object", "test");
 			GameObjectProperty newGameObjProperty = new GameObjectProperty ("test property");
 			newGameObject.AddProperty (newGameObjProperty);
 			newGameObject.RemoveProperty (newGameObjProperty);
@@ -62,7 +62,7 @@ namespace GameCraftTests
 		[TestCase(TestName="Removing a property from a GameObject via string should work succesfully")]
 		public void RemovePropertyByNameFromGameObject()
 		{
-			GameObject newGameObject = new GameObject ("new game object");
+            GameObject newGameObject = new GameObject("new game object", "test");
 			GameObjectProperty newGameObjProperty = new GameObjectProperty ("test property");
 			newGameObject.AddProperty (newGameObjProperty);
 
@@ -71,7 +71,7 @@ namespace GameCraftTests
 		[TestCase(TestName="Removing a property via GameObjectProperty from a GameObject when it doesn't exist should return false")]
 		public void RemovePropertyFromGameObject_DoesntExist_ReturnFalse()
 		{
-			GameObject newGameObject = new GameObject ("new game object");
+            GameObject newGameObject = new GameObject("new game object", "test");
 			GameObjectProperty newGameObjProperty = new GameObjectProperty ("test property");
 
 			Assert.IsFalse(newGameObject.RemoveProperty(newGameObjProperty));
@@ -79,14 +79,14 @@ namespace GameCraftTests
 		[TestCase(TestName="Removing a property via string from a GameObject when it doesn't exist should returnfalse")]
 		public void RemovePropertyFromGameObjectByName_DoesntExist_ReturnFalse()
 		{
-			GameObject newGameObject = new GameObject ("new game object");
+            GameObject newGameObject = new GameObject("new game object", "test");
 
 			Assert.IsFalse (newGameObject.RemoveProperty ("doesn't exist"));
 		}
 		[TestCase(TestName="Setting a Property on a GameObject that exists should return true")]
 		public void SetPropertyOnGameObject_ReturnTrue()
 		{
-			GameObject newGameObject = new GameObject ("new game object");
+            GameObject newGameObject = new GameObject("new game object", "test");
 			GameObjectProperty newGameObjProperty = new GameObjectProperty ("test property");
 			newGameObject.AddProperty (newGameObjProperty);
 			newGameObjProperty.Value = "string";
@@ -96,7 +96,7 @@ namespace GameCraftTests
 		[TestCase(TestName="Setting a Property on a GameObject that doesn't exist should return false")]
 		public void SetPropertyOnGameObject_DoesntExist_ReturnFalse()
 		{
-			GameObject newGameObject = new GameObject ("new game object");
+            GameObject newGameObject = new GameObject("new game object", "test");
 			GameObjectProperty newGameObjProperty = new GameObjectProperty ("test property");
 
 			Assert.IsFalse (newGameObject.SetProperty (newGameObjProperty));
@@ -104,7 +104,7 @@ namespace GameCraftTests
 		[TestCase(TestName="HasProperty() via GameObjectProperty should return true when a Property matching exists")]
 		public void HasPropertyOnGameObjectWithProperty_ReturnsTrue()
 		{
-			GameObject newGameObject = new GameObject ("new game object");
+            GameObject newGameObject = new GameObject("new game object", "test");
 			GameObjectProperty newGameObjProperty = new GameObjectProperty ("test property");
 			newGameObject.AddProperty (newGameObjProperty);
 
@@ -113,7 +113,7 @@ namespace GameCraftTests
 		[TestCase(TestName="HasProperty() via string should return true when a Property exists")]
 		public void HasPropertyOnGameObjectWithProperty_ByName_ReturnsTrue()
 		{
-			GameObject newGameObject = new GameObject ("new game object");
+            GameObject newGameObject = new GameObject("new game object", "test");
 			GameObjectProperty newGameObjProperty = new GameObjectProperty ("test property");
 			newGameObject.AddProperty (newGameObjProperty);
 
@@ -122,14 +122,14 @@ namespace GameCraftTests
 		[TestCase(TestName="HasProperty should return false if a Property on a GameObject doesn't exist")]
 		public void HasPropertyOnGameObject_DoesntExist_ReturnFalse()
 		{
-			GameObject newGameObject = new GameObject ("new game object");
+            GameObject newGameObject = new GameObject("new game object", "test");
 
 			Assert.IsFalse (newGameObject.HasProperty ("doesn't exist"));
 		}
 		[TestCase(TestName="Receiving an Add Message succesfully should return true")]
 		public void ReceiveAddMessage_Success_ReturnTrue()
 		{
-			GameObject newGameObject = new GameObject ("new game object");
+            GameObject newGameObject = new GameObject("new game object", "test");
 			string propName = "new property";
 			GameObjectProperty newProperty = new GameObjectProperty (propName);
 			newProperty.Value = false;
@@ -142,7 +142,7 @@ namespace GameCraftTests
 		[TestCase(TestName="Receiving an Add Message when a property with that name already exists")]
 		public void ReceiveAddMessage_PropertyExists_ReturnFalse()
 		{
-			GameObject newGameObject = new GameObject ("new game object");
+            GameObject newGameObject = new GameObject("new game object", "test");
 			string propName = "new property";
 			GameObjectProperty newProperty = new GameObjectProperty (propName);
 			GameObjectProperty newerProperty = new GameObjectProperty (propName);
@@ -157,7 +157,7 @@ namespace GameCraftTests
 		[TestCase(TestName="Receiving a Set Message when a property exists should return true")]
 		public void ReceiveSetMessage_PropertyExists_ReturnTrue()
 		{
-			GameObject newGameObject = new GameObject ("new game object");
+            GameObject newGameObject = new GameObject("new game object", "test");
 			string propName = "new property";
 			GameObjectProperty newProperty = new GameObjectProperty(propName, false);
 			newGameObject.AddProperty (newProperty);
@@ -173,7 +173,7 @@ namespace GameCraftTests
 		[TestCase(TestName="Receiving a Set message when a property doesn't exist should return false")]
 		public void ReceiveSetMessage_PropertyDoesntExist_ReturnFalse()
 		{
-			GameObject newGameObject = new GameObject ("new game object");
+            GameObject newGameObject = new GameObject("new game object", "test");
 			string propName = "new property";
 			GameObjectProperty newProperty = new GameObjectProperty(propName, false);
 
@@ -185,7 +185,7 @@ namespace GameCraftTests
 		[TestCase(TestName="Receiving a Get message when a property exists should return true")]
 		public void ReceiveGetMessage_PropertyExists_ReturnTrue()
 		{
-			GameObject newGameObject = new GameObject ("new game object");
+            GameObject newGameObject = new GameObject("new game object", "test");
 			string propName = "new property";
 			GameObjectProperty newProperty = new GameObjectProperty (propName, true);
 			newGameObject.AddProperty (newProperty);
@@ -200,7 +200,7 @@ namespace GameCraftTests
 		[TestCase(TestName="Receive a Get message when a property exists should return the property")]
 		public void ReceiveGetMessage_PropertExists_ReturnProperty()
 		{
-			GameObject newGameObject = new GameObject ("new game object");
+            GameObject newGameObject = new GameObject("new game object", "test");
 			string propName = "new property";
 			GameObjectProperty newProperty = new GameObjectProperty (propName, true);
 
@@ -216,7 +216,7 @@ namespace GameCraftTests
 		[TestCase(TestName="Receieving a Get message when a property doesn't exist should return false")]
 		public void ReceiveGetMessage_PropertyDoesntExist()
 		{
-			GameObject newGameObject = new GameObject ("new game object");
+            GameObject newGameObject = new GameObject("new game object", "test");
 			string propName = "new property";
 			GameObjectProperty newProperty = new GameObjectProperty (propName);
 
@@ -229,7 +229,7 @@ namespace GameCraftTests
 		[TestCase(TestName="Receving a Remove message removes a property from a GameObject, and returns true")]
 		public void ReceiveRemoveMessage_RemoveProperty_ReturnTrue()
 		{
-			GameObject newGameObject = new GameObject ("new game object");
+            GameObject newGameObject = new GameObject("new game object", "test");
 			string propName = "new property";
 			GameObjectProperty newProperty = new GameObjectProperty (propName);
 
@@ -245,7 +245,7 @@ namespace GameCraftTests
 		[TestCase(TestName="Receiving a Remove message when a property doesn't exists returns false")]
 		public void ReceiveRemoveMessage_PropertyDoesntExist_ReturnsFalse()
 		{
-			GameObject newGameObject = new GameObject ("new game object");
+            GameObject newGameObject = new GameObject("new game object", "test");
 
 			string propName = "new property";
 			GameObjectProperty newProperty = new GameObjectProperty (propName);

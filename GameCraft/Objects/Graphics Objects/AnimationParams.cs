@@ -1,6 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-
-namespace GameCraft
+﻿namespace GameCraft
 {
     public struct AnimationParams
     {

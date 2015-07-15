@@ -1,5 +1,4 @@
-﻿using System.Xml.Schema;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 
 namespace GameCraft
 {

@@ -1,18 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using GameCraft.Archive;
 using GameCraft.Designer;
+using GameCraft.SoundObjects;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using NUnit.Framework;
+using NUnit.Framework.Constraints;
 using Action = GameCraft.Designer.ObjectAction;
 
 namespace GameCraft
 {
-    
-    public class GameDesigner
+    [Serializable]
+    public class GameDesigner : IArchiveData
     {
         static readonly GameDesigner instance = new GameDesigner();
+        private GameObserver Observer = GameObserver.Instance;
+        private State _state;
+        private Dictionary<string, State > _states = new Dictionary<string, State>();
+        
         
         static GameDesigner()
         {
@@ -29,135 +35,297 @@ namespace GameCraft
             get { return instance;}
         }
 
-        public State CurrentState { get; set; }
-
-        public List<State> StateList { get; set; }
-
-        public void Update()
+        public void SaveData()
         {
+
+        }
+
+        public State CurrentState
+        {
+            get { return _state; }
+            set
+            {
+                Observer.CollisionManager.CurrentTree = value.Level.QuadTree;
+                _state = value;
+            }
+        }
+
+        public Dictionary<string, State> StateList { get {return _states;} }
+
+        public void Update(GameTime gameTime)
+        {
+            if (CurrentState == null)
+            {
+                throw new NullReferenceException("CurrentState is not set");
+            }
+            if (CurrentState.Started == false)
+            {
+                CurrentState.StartTime = gameTime.ElapsedGameTime;
+                CurrentState.Started = true;
+            }
             KeyboardState keyboardState = Keyboard.GetState();
             GamePadState gamePadState = GamePad.GetState(PlayerIndex.One);
             MouseState mouseState = Mouse.GetState();
-            GameObserver Observer = GameObserver.Instance;
 
             foreach (KeyValuePair<string, Rule> rule in CurrentState.Rules)
             {
+                System.Action ObjectAction = () =>
+                {
+                    foreach (KeyValuePair<string, Action> action in rule.Value.ObjectActions)
+                    {
+                        switch (action.Value.Operation)
+                        {
+                            case Operation.Add:
+                                GameObject addGameObject =
+                                    Observer.ObjList.Find(obj => obj.Name == action.Value.TargetObj);
+                                Receipt<GameObjectProperty> getReceipt =
+                                    addGameObject.GetProperty(action.Value.Property);
+                                double addNewValue = Convert.ToDouble(getReceipt.Response.Value);
+
+                                if (action.Value.IsRelational)
+                                {
+                                    GameObject relGameObject =
+                                        Observer.ObjList.Find(obj => obj.Name == action.Value.Relational.Name);
+                                    if (relGameObject != null)
+                                    {
+                                        Receipt<GameObjectProperty> relReceipt = relGameObject.GetProperty(action.Value.Relational.Property);
+                                        if (relReceipt.Status)
+                                        {
+                                            addNewValue += Convert.ToDouble(relReceipt.Response.Value) +
+                                                          Convert.ToDouble(action.Value.SetValue);
+                                        }
+                                    }
+
+                                }
+                                else
+                                {
+                                    addNewValue += Convert.ToDouble(action.Value.SetValue); 
+                                }
+
+                                GameObjectProperty addGameObjectProperty =
+                                    new GameObjectProperty(action.Value.Property, addNewValue);
+                                ObjectMessage addNewMessage = new ObjectMessage(CommandObject.set,
+                                    addGameObjectProperty);
+                                addNewMessage.Receivers.Add(action.Value.TargetObj);
+
+                                Observer.SendMessage(addNewMessage);
+                                break;
+
+                            case Operation.Subtract:
+                                GameObject subtractGameObject =
+                                    Observer.ObjList.Find(obj => obj.Name == action.Value.TargetObj);
+
+                                Receipt<GameObjectProperty> getSubtractReceipt =
+                                    subtractGameObject.GetProperty(action.Value.Property);
+
+                                double subtractNewValue = Convert.ToDouble(getSubtractReceipt.Response.Value);
+
+                                if (action.Value.IsRelational)
+                                {
+                                    GameObject relGameObject =
+                                        Observer.ObjList.Find(obj => obj.Name == action.Value.Relational.Name);
+                                    if (relGameObject != null)
+                                    {
+                                        Receipt<GameObjectProperty> relReceipt = relGameObject.GetProperty(action.Value.Relational.Property);
+                                        if (relReceipt.Status)
+                                        {
+                                            subtractNewValue = (Convert.ToDouble(relReceipt.Response.Value) + 
+                                                                Convert.ToDouble(getSubtractReceipt.Response.Value)) -
+                                                                Convert.ToDouble(action.Value.SetValue);
+                                        }
+                                    }
+
+                                }
+                                else
+                                {
+                                    subtractNewValue = Convert.ToDouble(getSubtractReceipt.Response.Value) -
+                                    Convert.ToDouble(action.Value.SetValue); 
+                                }
+
+                                GameObjectProperty subtractGameObjectProperty =
+                                    new GameObjectProperty(action.Value.Property, subtractNewValue);
+                                ObjectMessage subtractnewMessage = new ObjectMessage(CommandObject.set,
+                                    subtractGameObjectProperty);
+                                subtractnewMessage.Receivers.Add(action.Value.TargetObj);
+
+                                Observer.SendMessage(subtractnewMessage);
+                                break;
+
+                            case Operation.Set:
+                                GameObjectProperty setGameObjectProperty =
+                                    new GameObjectProperty(action.Value.Property, action.Value.SetValue);
+
+                                ObjectMessage setNewMessage;
+                                if (action.Value.IsRelational)
+                                {
+                                    GameObject relGameObject =
+                                        Observer.ObjList.Find(obj => obj.Name == action.Value.Relational.Name);
+                                    if (relGameObject != null)
+                                    {
+                                        Receipt<GameObjectProperty> relReceipt = relGameObject.GetProperty(action.Value.Relational.Property);
+                                        if (relReceipt.Status)
+                                        {
+                                            setGameObjectProperty.Value = Convert.ToDouble(relReceipt.Response.Value) + Convert.ToDouble(action.Value.SetValue);
+                                        }
+                                    }
+
+                                }
+
+                                setNewMessage = new ObjectMessage(CommandObject.set,
+                                    setGameObjectProperty);
+                                setNewMessage.Receivers.Add(action.Value.TargetObj);
+
+                                Observer.SendMessage(setNewMessage);
+                                break;
+
+                            case Operation.Multiply:
+                                GameObject multiplyGameObject =
+                                    Observer.ObjList.Find(obj => obj.Name == action.Value.TargetObj);
+
+                                Receipt<GameObjectProperty> getMultiplyReceipt =
+                                    multiplyGameObject.GetProperty(action.Value.Property);
+
+                                double multiplyNewValue = Convert.ToDouble(getMultiplyReceipt.Response.Value);
+
+                                if (action.Value.IsRelational)
+                                {
+                                    GameObject relGameObject =
+                                        Observer.ObjList.Find(obj => obj.Name == action.Value.Relational.Name);
+                                    if (relGameObject != null)
+                                    {
+                                        Receipt<GameObjectProperty> relReceipt = relGameObject.GetProperty(action.Value.Relational.Property);
+                                        if (relReceipt.Status)
+                                        {
+                                            multiplyNewValue = (Convert.ToDouble(relReceipt.Response.Value) +
+                                                                Convert.ToDouble(getMultiplyReceipt.Response.Value)) *
+                                                                Convert.ToDouble(action.Value.SetValue);
+                                        }
+                                    }
+
+                                }
+                                else
+                                {
+                                    multiplyNewValue = Convert.ToDouble(getMultiplyReceipt.Response.Value) * Convert.ToDouble(action.Value.SetValue); 
+                                }
+
+                                GameObjectProperty multiplyGameObjectProperty =
+                                    new GameObjectProperty(action.Value.Property, multiplyNewValue);
+                                ObjectMessage multiplyNewMessage = new ObjectMessage(CommandObject.set,
+                                    multiplyGameObjectProperty);
+                                multiplyNewMessage.Receivers.Add(action.Value.TargetObj);
+
+                                Observer.SendMessage(multiplyNewMessage);
+                                break;
+
+                            case Operation.Divide:
+                                GameObject divideGameObject =
+                                    Observer.ObjList.Find(obj => obj.Name == action.Value.TargetObj);
+
+                                Receipt<GameObjectProperty> getDivideReceipt =
+                                    divideGameObject.GetProperty(action.Value.Property);
+                                double divideNewValue = Convert.ToDouble(getDivideReceipt.Response.Value);
+
+                                if (action.Value.IsRelational)
+                                {
+                                    GameObject relGameObject =
+                                        Observer.ObjList.Find(obj => obj.Name == action.Value.Relational.Name);
+                                    if (relGameObject != null)
+                                    {
+                                        Receipt<GameObjectProperty> relReceipt = relGameObject.GetProperty(action.Value.Relational.Property);
+                                        if (relReceipt.Status)
+                                        {
+                                            divideNewValue = (Convert.ToDouble(relReceipt.Response.Value) +
+                                                                Convert.ToDouble(getDivideReceipt.Response.Value)) /
+                                                                Convert.ToDouble(action.Value.SetValue);
+                                        }
+                                    }
+
+                                }
+                                else
+                                {
+                                    divideNewValue = Convert.ToDouble(getDivideReceipt.Response.Value) / Convert.ToDouble(action.Value.SetValue); 
+                                }
+
+                                GameObjectProperty divideGameObjectProperty =
+                                    new GameObjectProperty(action.Value.Property, divideNewValue);
+                                ObjectMessage divideNewMessage = new ObjectMessage(CommandObject.set,
+                                    divideGameObjectProperty);
+                                divideNewMessage.Receivers.Add(action.Value.TargetObj);
+
+                                Observer.SendMessage(divideNewMessage);
+                                break;
+                        }
+                    }
+                };
+                System.Action GraphicAction = () =>
+                {
+                    foreach (Drawable drawObject in from pair in rule.Value.GraphicActions let drawGameObject = Observer.ObjList.Find(obj => obj.Name == pair.Value.TargetObj) let drawProps = new List<string>
+                    {
+                            "Animation", "PositionX", "PositionY"
+                    }
+                    let getPositionReceipt = drawGameObject.GetManyProperty(drawProps)
+                    let PositionX = Convert.ToSingle(getPositionReceipt.Response.Find(prop => prop.Name == "PositionX").Value)
+                    let PositionY = Convert.ToSingle(getPositionReceipt.Response.Find(prop => prop.Name == "PositionY").Value)
+                    select new Drawable(drawGameObject.Name, getPositionReceipt.Response.Find(prop => prop.Name == "Animation").Value.ToString(), new Vector2(PositionX, PositionY), pair.Value.PlayCount))
+                    {
+                        Observer.DrawList.Add(drawObject);
+                    }
+                };
+                System.Action SoundAction = () =>
+                {
+                    foreach (Hearable newSound in rule.Value.SoundActions.Select(pair => new Hearable(pair.Value.SoundName, pair.Value.PlayCount)))
+                    {
+                        Observer.SoundList.Add(newSound);
+                    }
+                };
+                System.Action CollisionAction = () =>
+                {
+                    foreach (KeyValuePair<string, CollisionAction> action in rule.Value.CollisionActions)
+                    {
+                        Receipt<GameObject> objectReceipt = Observer.GetGameObject(action.Value.TargetObj);
+                        if (objectReceipt.Status != true) continue;
+                        switch (action.Value.Operation)
+                        {
+                            case CollisionActionOperation.Add:
+                                Observer.CollisionManager.Add(objectReceipt.Response);
+                                break;
+                            case CollisionActionOperation.Remove:
+                                Observer.CollisionManager.Remove(objectReceipt.Response);
+                                break;
+                            case CollisionActionOperation.Move:
+                                Observer.CollisionManager.Move(objectReceipt.Response);
+                                break;
+                        }
+                    }
+                };
+                System.Action GameStateAction = () =>
+                {
+                    foreach (KeyValuePair<string, GameStateAction> action in rule.Value.GameStateActions.Where(action => StateList.ContainsKey(action.Value.SetState)))
+                    {
+                        State newGameState;
+                        StateList.TryGetValue(action.Value.SetState, out newGameState);
+                        CurrentState = newGameState;
+                    }
+                };
+                System.Action executeActions = () =>
+                {
+                    ObjectAction();
+                    GraphicAction();
+                    CollisionAction();
+                    SoundAction();
+                };
+                if (rule.Value.CollisionConditions.Count > 0)
+                {
+                    foreach (KeyValuePair<string, CollisionCondition> pair in rule.Value.CollisionConditions.Where(pair => CheckCollisionCondition(pair.Value, Observer)))
+                    {
+                        executeActions();
+                    }
+                }
                 Dictionary<string, int> conditionLengths = rule.Value.GetConditionLengths();
-                foreach (
-                    KeyValuePair<string, int> conditionLength in
-                        conditionLengths.Where(conditionLength => conditionLength.Value > 0))
+                foreach (KeyValuePair<string, int> conditionLength in conditionLengths.Where(conditionLength => conditionLength.Value > 0))
                 {
                     var rule1 = rule;
                     
-                    System.Action ObjectAction = () =>
-                    {
-                        foreach (KeyValuePair<string, Action> action in rule1.Value.ObjectActions)
-                        {
-                            switch (action.Value.Operation)
-                            {
-                                case Operation.Add:
-                                    GameObject addGameObject =
-                                        Observer.ObjList.Find(obj => obj.Name == action.Value.TargetObj);
-
-                                    Receipt<GameObjectProperty> getReceipt =
-                                        addGameObject.GetProperty(action.Value.Property);
-                                    Object addNewValue = Convert.ToDouble(getReceipt.Response.Value) +
-                                                         Convert.ToDouble(action.Value.SetValue);
-
-                                    GameObjectProperty addGameObjectProperty =
-                                        new GameObjectProperty(action.Value.Property, addNewValue);
-                                    ObjectMessage addNewMessage = new ObjectMessage(CommandObject.set,
-                                        addGameObjectProperty);
-                                    addNewMessage.Receivers.Add(action.Value.TargetObj);
-
-                                    Observer.SendMessage(addNewMessage);
-                                    break;
-
-                                case Operation.Subtract:
-                                    GameObject subtractGameObject =
-                                        Observer.ObjList.Find(obj => obj.Name == action.Value.TargetObj);
-
-                                    Receipt<GameObjectProperty> getSubtractReceipt =
-                                        subtractGameObject.GetProperty(action.Value.Property);
-                                    Object subtractNewValue = Convert.ToDouble(getSubtractReceipt.Response.Value) -
-                                                              Convert.ToDouble(action.Value.SetValue);
-
-                                    GameObjectProperty subtractGameObjectProperty =
-                                        new GameObjectProperty(action.Value.Property, subtractNewValue);
-                                    ObjectMessage subtractnewMessage = new ObjectMessage(CommandObject.set,
-                                        subtractGameObjectProperty);
-                                    subtractnewMessage.Receivers.Add(action.Value.TargetObj);
-
-                                    Observer.SendMessage(subtractnewMessage);
-                                    break;
-
-                                case Operation.Set:
-                                    GameObjectProperty setGameObjectProperty =
-                                        new GameObjectProperty(action.Value.Property, action.Value.SetValue);
-                                    ObjectMessage setNewMessage = new ObjectMessage(CommandObject.set,
-                                        setGameObjectProperty);
-                                    setNewMessage.Receivers.Add(action.Value.TargetObj);
-
-                                    Observer.SendMessage(setNewMessage);
-                                    break;
-
-                                case Operation.Multiply:
-                                    GameObject multiplyGameObject =
-                                        Observer.ObjList.Find(obj => obj.Name == action.Value.TargetObj);
-
-                                    Receipt<GameObjectProperty> getMultiplyReceipt =
-                                        multiplyGameObject.GetProperty(action.Value.Property);
-                                    Object multiplyNewValue = Convert.ToDouble(getMultiplyReceipt.Response.Value) *
-                                                              Convert.ToDouble(action.Value.SetValue);
-
-                                    GameObjectProperty multiplyGameObjectProperty =
-                                        new GameObjectProperty(action.Value.Property, multiplyNewValue);
-                                    ObjectMessage multiplyNewMessage = new ObjectMessage(CommandObject.set,
-                                        multiplyGameObjectProperty);
-                                    multiplyNewMessage.Receivers.Add(action.Value.TargetObj);
-
-                                    Observer.SendMessage(multiplyNewMessage);
-                                    break;
-
-                                case Operation.Divide:
-                                    GameObject divideGameObject =
-                                        Observer.ObjList.Find(obj => obj.Name == action.Value.TargetObj);
-
-                                    Receipt<GameObjectProperty> getDivideReceipt =
-                                        divideGameObject.GetProperty(action.Value.Property);
-                                    Object divideNewValue = Convert.ToDouble(getDivideReceipt.Response.Value) /
-                                                            Convert.ToDouble(action.Value.SetValue);
-
-                                    GameObjectProperty divideGameObjectProperty =
-                                        new GameObjectProperty(action.Value.Property, divideNewValue);
-                                    ObjectMessage divideNewMessage = new ObjectMessage(CommandObject.set,
-                                        divideGameObjectProperty);
-                                    divideNewMessage.Receivers.Add(action.Value.TargetObj);
-
-                                    Observer.SendMessage(divideNewMessage);
-                                    break;
-                            }
-                        }
-                    };
-                    System.Action GraphicAction = () =>
-                    {
-                        foreach (Drawable drawObject in from pair in rule1.Value.GraphicActions let drawGameObject = Observer.ObjList.Find(obj => obj.Name == pair.Value.TargetObj) let drawProps = new List<string>
-                        {
-                            "Animation", "PositionX", "PositionY"
-                        } let getPositionReceipt = drawGameObject.GetManyProperty(drawProps) let PositionX = Convert.ToSingle(getPositionReceipt.Response.Find(prop => prop.Name == "PositionX").Value) let PositionY = Convert.ToSingle(getPositionReceipt.Response.Find(prop => prop.Name == "PositionY").Value) select new Drawable(drawGameObject.Name, getPositionReceipt.Response.Find(prop => prop.Name == "Animation").Value.ToString(),new Vector2(PositionX, PositionY), pair.Value.PlayCount))
-                        {
-                            Observer.DrawList.Add(drawObject);
-                        }
-                    };
-                    System.Action SoundAction = () =>
-                    {
-
-                    };
-                    System.Action executeActions = () =>
-                    {
-                        ObjectAction();
-                        GraphicAction();
-                    };
                     switch (conditionLength.Key)
                     {
                         case "MouseButton":
@@ -173,14 +341,14 @@ namespace GameCraft
                             }
                             break;
                         case "KeyInput":
-                            foreach (KeyValuePair<string, InputCondition<Keys, KeyState>> condition in rule.Value.KeyInputConditions.Where(condition => CheckKeyInputCondition(condition.Value, keyboardState)))
+                            foreach (KeyValuePair<string, KeyboardCondition> condition in rule.Value.KeyInputConditions.Where(condition => CheckKeyInputCondition(condition.Value, keyboardState)))
                             {
                                 executeActions();
                             }
                             break;
                         case "GamePadButtons":
                             foreach (
-                                KeyValuePair<string, InputCondition<Buttons, ButtonState>> condition in
+                                KeyValuePair<string, GamePadButtonCondition> condition in
                                     rule.Value.GamePadButtonConditions.Where(
                                         condition => CheckGamePadButtonCondition(condition.Value, gamePadState)))
                             {
@@ -206,6 +374,10 @@ namespace GameCraft
                             }
                             break;
                         case "Linked":
+                            foreach (KeyValuePair<string, LinkedCondition> condition in rule.Value.LinkedConditions.Where(condition => CheckLinkedCondition(condition.Value,gamePadState,mouseState,keyboardState,Observer, gameTime)))
+                            {
+                                executeActions();
+                            }
                             break;
                         case "Property":
                             foreach (KeyValuePair<string, PropertyCondition> condition in rule.Value.PropertyConditions.Where(condition => CheckPropertyCondition(condition.Value, Observer)))
@@ -213,6 +385,25 @@ namespace GameCraft
                                 executeActions();
                             }
                             break;
+                        case "Animation":
+                            foreach (KeyValuePair<string, AnimationCondition> condition in rule.Value.AnimationConditions.Where(condition => CheckAnimationCondition(condition.Value, Observer)))
+                            {
+                                executeActions();
+                            }
+                            break;
+                        case "GameState":
+                            foreach (KeyValuePair<string, GameStateCondition> condition in rule.Value.GameStateConditions.Where(condition => CheckGameStateCondition(condition.Value)))
+                            {
+                                executeActions();
+                            }
+                            break;
+                        case "GameTime":
+                            foreach (KeyValuePair<string, GameTimeCondition> condition in rule.Value.GameTimeConditions.Where(condition => CheckGameTimeCondition(condition.Value, gameTime)))
+                            {
+                                executeActions();
+                            }
+                            break;
+
                     }
                 }
             }
@@ -632,8 +823,81 @@ namespace GameCraft
             return false;
         }
 
+        public bool CheckCollisionCondition(CollisionCondition condition, GameObserver observer)
+        {
+            Receipt<GameObject> originReceipt = observer.GetGameObject(condition.OriginObject);
+            Receipt<GameObject> targetReceipt = observer.GetGameObject(condition.TargetObject);
+            if (originReceipt.Status == false || targetReceipt.Status == false)
+            {
+                return false;
+            }
+
+            return observer.CollisionManager.CheckCollision(originReceipt.Response, targetReceipt.Response);
+        }
+
+        public bool CheckAnimationCondition(AnimationCondition condition, GameObserver observer)
+        {
+            if (!observer.CurrentFrameData.ContainsKey(condition.TargetObj)) return false;
+            int currentFrame;
+            observer.CurrentFrameData.TryGetValue(condition.TargetObj, out currentFrame);
+            if (currentFrame.Equals(null)) return false;
+            switch (condition.Operator)
+            {
+                case Operator.Equal:
+                    return currentFrame == condition.Frame;
+                case Operator.NotEqual:
+                    return currentFrame != condition.Frame;
+                case Operator.Greater:
+                    return currentFrame > condition.Frame;
+                case Operator.GreaterThanOrEqual:
+                    return currentFrame >= condition.Frame;
+                case Operator.LessThan:
+                    return currentFrame < condition.Frame;
+                case Operator.LessThanOrEqual:
+                    return currentFrame <= condition.Frame;
+            }
+            return false;
+        }
+
+        public bool CheckGameStateCondition(GameStateCondition condition)
+        {
+            switch (condition.Operator)
+            {
+                case Operator.Equal:
+                    return CurrentState.Name == condition.TargetState;
+                case Operator.NotEqual:
+                    return CurrentState.Name != condition.TargetState;
+                case Operator.Contains:
+                    return CurrentState.Name.Contains(condition.TargetState);
+                case Operator.DoesNotContain:
+                    return !(CurrentState.Name.Contains(condition.TargetState));
+            }
+
+            return false;
+        }
+
+        public bool CheckGameTimeCondition(GameTimeCondition condition, GameTime gameTime)
+        {
+            switch (condition.Operator)
+            {
+                case Operator.Equal:
+                    return condition.TargetTime == gameTime.ElapsedGameTime;
+                case Operator.NotEqual:
+                    return condition.TargetTime != gameTime.ElapsedGameTime;
+                case Operator.Greater:
+                    return condition.TargetTime > gameTime.ElapsedGameTime;
+                case Operator.GreaterThanOrEqual:
+                    return condition.TargetTime >= gameTime.ElapsedGameTime;
+                case Operator.LessThan:
+                    return condition.TargetTime < gameTime.ElapsedGameTime;
+                case Operator.LessThanOrEqual:
+                    return condition.TargetTime <= gameTime.ElapsedGameTime;
+            }
+
+            return false;
+        }
         public bool CheckLinkedCondition(LinkedCondition linkedCondition, GamePadState gamePadState,
-            MouseState mouseState, KeyboardState keyboardState, GameObserver observer)
+            MouseState mouseState, KeyboardState keyboardState, GameObserver observer, GameTime gameTime)
         {
             if (linkedCondition.GamePadButtonConditions.Select(condition => CheckGamePadButtonCondition(condition.Value, gamePadState)).Any(returnValue => !returnValue))
             {
@@ -664,7 +928,22 @@ namespace GameCraft
             {
                 return false;
             }
-
+            if (linkedCondition.CollisionConditions.Select(condition => CheckCollisionCondition(condition.Value, observer)).Any(returnValue => !returnValue))
+            {
+                return false;
+            }
+            if (linkedCondition.AnimationConditions.Select(condition => CheckAnimationCondition(condition.Value, observer)).Any(returnValue => !returnValue))
+            {
+                return false;
+            }
+            if (linkedCondition.GameStateConditions.Select(condition => CheckGameStateCondition(condition.Value)).Any(returnValue => !returnValue))
+            {
+                return false;
+            }
+            if (linkedCondition.GameTimeConditions.Select(condition => CheckGameTimeCondition(condition.Value, gameTime)).Any(returnValue => !returnValue))
+            {
+                return false;
+            }
             return true;
         }
 

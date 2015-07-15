@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Reflection.Emit;
 
 namespace GameCraft
 {
+    [Serializable]
 	public class GameObjectProperty
 	{
 	    public GameObjectProperty (string propertyName)

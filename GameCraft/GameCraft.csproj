@@ -64,17 +64,41 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CollisionManager.cs" />
     <Compile Include="Game1.cs" />
+    <Compile Include="Objects\Archive\GameArchive.cs" />
+    <Compile Include="Objects\Archive\GameData.cs" />
+    <Compile Include="Objects\Archive\IArchiveData.cs" />
+    <Compile Include="Objects\Circle.cs" />
+    <Compile Include="Objects\CollisionBox.cs" />
+    <Compile Include="Objects\CollisionCircle.cs" />
     <Compile Include="Objects\Designer Objects\Actions\ActionType.cs" />
+    <Compile Include="Objects\Designer Objects\Actions\Collisions\CollisionAction.cs" />
+    <Compile Include="Objects\Designer Objects\Actions\Collisions\CollisionActionOperation.cs" />
+    <Compile Include="Objects\Designer Objects\Actions\GameAction.cs" />
+    <Compile Include="Objects\Designer Objects\Actions\GameStateAction.cs" />
     <Compile Include="Objects\Designer Objects\Actions\GraphicAction.cs" />
+    <Compile Include="Objects\Designer Objects\Actions\Relational.cs" />
     <Compile Include="Objects\Designer Objects\Actions\SoundAction.cs" />
+    <Compile Include="Objects\Designer Objects\Conditions\AnimationCondition.cs" />
+    <Compile Include="Objects\Designer Objects\Conditions\Collision\CollisionCondition.cs" />
+    <Compile Include="Objects\Designer Objects\Conditions\Collision\CollisionOperator.cs" />
+    <Compile Include="Objects\Designer Objects\Conditions\Collision\CollisionType.cs" />
+    <Compile Include="Objects\Designer Objects\Conditions\ConditionType.cs" />
     <Compile Include="Objects\Designer Objects\Conditions\Coords.cs" />
+    <Compile Include="Objects\Designer Objects\Conditions\GameCondition.cs" />
+    <Compile Include="Objects\Designer Objects\Conditions\GamePadButtonCondition.cs" />
     <Compile Include="Objects\Designer Objects\Conditions\GamePadThumbStickCondition.cs" />
     <Compile Include="Objects\Designer Objects\Conditions\GamePadTriggerCondition.cs" />
+    <Compile Include="Objects\Designer Objects\Conditions\GameStateCondition.cs" />
+    <Compile Include="Objects\Designer Objects\Conditions\GameTimeCondition.cs" />
+    <Compile Include="Objects\Designer Objects\Conditions\KeyboardCondition.cs" />
+    <Compile Include="Objects\Designer Objects\Conditions\MouseButtonCondition.cs" />
     <Compile Include="Objects\Designer Objects\Conditions\MouseMoveCondition.cs" />
     <Compile Include="Objects\Designer Objects\Conditions\ThumbStick.cs" />
     <Compile Include="Objects\Designer Objects\Conditions\Trigger.cs" />
     <Compile Include="Objects\DummyGame.cs" />
+    <Compile Include="Objects\Level\FRect.cs" />
     <Compile Include="Objects\GameGraphics.cs" />
     <Compile Include="Objects\GameSound.cs" />
     <Compile Include="Objects\Graphics Objects\Animation.cs" />
@@ -93,7 +117,9 @@
     <Compile Include="Objects\Graphics Objects\GraphicContent.cs" />
     <Compile Include="Objects\Graphics Objects\PlayCount.cs" />
     <Compile Include="Objects\Graphics Objects\PlayedCount.cs" />
+    <Compile Include="Objects\Level\Level.cs" />
     <Compile Include="Objects\Message Objects\Failure.cs" />
+    <Compile Include="Objects\Level\QuadTree.cs" />
     <Compile Include="Objects\SceneObject.cs" />
     <Compile Include="Objects\SoundObjects\Hearable.cs" />
     <Compile Include="Program.cs" />
@@ -111,6 +137,12 @@
     <Compile Include="Objects\Message Objects\ObjResponse.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Content\GrayBox.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\RedBlock.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Content\Wizard_BackWalking.xnb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

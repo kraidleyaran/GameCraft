@@ -1,24 +1,20 @@
-﻿using Microsoft.Xna.Framework.Input;
-
-namespace GameCraft.Designer
+﻿namespace GameCraft.Designer
 {
-    public class InputCondition<InputType, InputState>
+    public class InputCondition<InputType, InputState> : GameCondition
     {
-        public InputCondition(string name)
+        public InputCondition(string name) : base(name)
         {
             Name = name;
             
         }
 
-        public InputCondition(string name, InputType input, InputState compareValue, Operator inOperater)
+        public InputCondition(string name, InputType input, InputState compareValue, Operator inOperater) : base(name)
         {
             Name = name;
             Input = input;
             CompareValue = compareValue;
             Operator = inOperater;
         }
-
-        public string Name { get; protected set; }
 
         public InputType Input { get; set; }
         public InputState CompareValue { get; set; }

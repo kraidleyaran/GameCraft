@@ -1,9 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using GameCraft.Archive;
 using GameCraft.SoundObjects;
+using Microsoft.Xna.Framework;
 
 namespace GameCraft
 {
-	public sealed class GameObserver
+    [Serializable]
+	public sealed class GameObserver : IArchiveData
 	{
 		static readonly GameObserver instance = new GameObserver();
 
@@ -11,6 +16,10 @@ namespace GameCraft
         private List<GameObject> _objList = new List<GameObject>();
         private List<Drawable>  _drawables = new List<Drawable>();
         private List<Hearable> _soundList = new List<Hearable>();
+        private CollisionManager _collisionManager = new CollisionManager(new QuadTree<GameObject>(new Vector2(0f,0f),0));
+        private GameArchive gameArchive = GameArchive.Instance;
+        private Dictionary<string, int> _currentFrameData = new Dictionary<string, int>();
+
 
 
 	    private const string _name = "GameObserver";
@@ -38,11 +47,24 @@ namespace GameCraft
         public List<Drawable> DrawList { get { return _drawables;} private set { _drawables = value; } }
 
         public List<Hearable> SoundList { get { return _soundList; } }
+
+	    public CollisionManager CollisionManager { get { return _collisionManager;} }
+
+        public Dictionary<string, int> CurrentFrameData
+        {
+            get { return _currentFrameData; }
+        }
+
         public bool Clear()
         {
             _boxList = new List<GameBox>();
             _objList = new List<GameObject>();
             return true;
+        }
+
+        public void SaveData()
+        {
+
         }
 	    public Receipt<GameObject> RegisterGameObject(GameObject newGameObject)
 	    {
@@ -99,6 +121,28 @@ namespace GameCraft
 	            {
                     returnReceipt.Response.Add(obj);
 	            }
+	        }
+
+	        return returnReceipt;
+	    }
+
+	    public Receipt<GameObject> GetGameObject(string objectName)
+	    {
+	        return !(DoesGameObjNameExist(objectName)) ? new Receipt<GameObject>(_name, new GameObject(objectName, "none"), false) : new Receipt<GameObject>(_name,_objList.Find(obj => obj.Name == objectName), true);
+	    }
+
+	    public Receipt<List<GameObject>> GetManyGameObjects(List<string> nameList)
+	    {
+	        Receipt<List<GameObject>> returnReceipt = new Receipt<List<GameObject>>(_name, new List<GameObject>(), true );
+            foreach (string name in nameList)
+            {
+                Receipt<GameObject> objectReceipt = GetGameObject(name);
+                if (!(objectReceipt.Status))
+	            {
+	                Failure newFailure = new Failure(name + " GameObject does not exist");
+                    returnReceipt.Failures.Add(newFailure);
+	            }
+                returnReceipt.Response.Add(objectReceipt.Response);
 	        }
 
 	        return returnReceipt;

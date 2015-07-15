@@ -13,7 +13,7 @@ namespace GameCraftTests
 	    {
 	        GameObserver Observer = GameObserver.Instance;
 	        Observer.Clear();
-            GameObject newGameObject = new GameObject("new game object");
+            GameObject newGameObject = new GameObject("new game object", "test");
 	        Assert.IsTrue(Observer.RegisterGameObject(newGameObject).Status);
 	    }
 
@@ -22,7 +22,7 @@ namespace GameCraftTests
 	    {
             GameObserver Observer = GameObserver.Instance;
             Observer.Clear();
-            GameObject newGameObject = new GameObject("new game object");
+            GameObject newGameObject = new GameObject("new game object", "test");
 	        Receipt<GameObject> returnReceipt = Observer.RegisterGameObject(newGameObject);
             Assert.AreEqual(returnReceipt.Response, newGameObject);
 	    }
@@ -32,8 +32,8 @@ namespace GameCraftTests
 	    {
             GameObserver Observer = GameObserver.Instance;
             Observer.Clear();
-            
-            GameObject newGameObject = new GameObject("new game object");
+
+            GameObject newGameObject = new GameObject("new game object", "test");
 
             Assert.IsFalse(Observer.DoesGameObjNameExist(newGameObject.Name));
 
@@ -82,7 +82,7 @@ namespace GameCraftTests
 	    {
             GameObserver Observer = GameObserver.Instance;
             Observer.Clear();
-            GameObject newGameObject = new GameObject("new game object");
+            GameObject newGameObject = new GameObject("new game object", "test");
 	        Observer.RegisterGameObject(newGameObject);
 
             GameObjectProperty newProperty = new GameObjectProperty("new property", true);
@@ -98,7 +98,7 @@ namespace GameCraftTests
 	    {
             GameObserver Observer = GameObserver.Instance;
             Observer.Clear();
-            GameObject newGameObject = new GameObject("new game object");
+            GameObject newGameObject = new GameObject("new game object", "test");
             Observer.RegisterGameObject(newGameObject);
 
             GameObjectProperty newProperty = new GameObjectProperty("new property", true);

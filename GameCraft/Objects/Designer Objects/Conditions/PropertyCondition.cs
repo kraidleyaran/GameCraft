@@ -1,16 +1,14 @@
-﻿using System.Reflection.Emit;
-
-namespace GameCraft.Designer
+﻿namespace GameCraft.Designer
 {
-    public class PropertyCondition
+    public class PropertyCondition : GameCondition
     {
-        public PropertyCondition(string name)
+        public PropertyCondition(string name) : base(name)
         {
             Name = name;
             
         }
 
-        public PropertyCondition(string name, string targetName, string property, Operator inOperator, object compareValue)
+        public PropertyCondition(string name, string targetName, string property, Operator inOperator, object compareValue) : base(name)
         {
             Name = name;
             TargetName = targetName;
@@ -18,8 +16,6 @@ namespace GameCraft.Designer
             Operator = inOperator;
             CompareValue = compareValue;
         }
-
-        public string Name { get; private set; }
 
         public string TargetName { get; set; }
 

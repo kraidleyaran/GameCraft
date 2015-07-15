@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using GameCraft;
 
 namespace GameCraft
 {
@@ -13,6 +13,7 @@ namespace GameCraft
         
         private Dictionary<string, Animation>  _animations = new Dictionary<string, Animation>();
         private Dictionary<string, GameBox> _boxedLists = new Dictionary<string, GameBox>();
+        private Dictionary<string, GraphicContent> _savedContent = new Dictionary<string, GraphicContent>();
         
         private GameObserver observer = GameObserver.Instance;
         
@@ -25,6 +26,7 @@ namespace GameCraft
             PositionList = new Dictionary<string, PlayedCount>();
 
         }
+        
         public GraphicsDeviceManager DeviceManager { get; private set; }
         public ContentManager Content { get; private set; }
 
@@ -50,14 +52,18 @@ namespace GameCraft
 
                 DrawList.Remove(drawable.TargetObj);
                 PositionList.Remove(drawable.TargetObj);
-
-                DrawList.Add(drawable.TargetObj, _animations.First(objPair => objPair.Key == drawable.Animation).Value);
+                
+                animation = _animations.First(objPair => objPair.Key == drawable.Animation).Value.CloneAnimation(Content);
+                DrawList.Add(drawable.TargetObj, animation);
                 PositionList.Add(drawable.TargetObj, new PlayedCount(0, drawable));
+                observer.CurrentFrameData.Add(drawable.TargetObj, 0);
             }
 
             foreach (KeyValuePair<string, Animation> pair in DrawList)
             {
                 pair.Value.UpdateFrame(elapsed);
+                observer.CurrentFrameData.Remove(pair.Key);
+                observer.CurrentFrameData.Add(pair.Key, pair.Value.GetCurrentFrame());
             }
             
         }
@@ -81,19 +87,48 @@ namespace GameCraft
             observer.DrawList.Clear();
         }
 
-        public void LoadContent(List<GraphicContent> contentList )
+        public Receipt<List<GraphicContent>> LoadContent(List<GraphicContent> contentList )
         {
+            Receipt<List<GraphicContent>> returnReceipt = new Receipt<List<GraphicContent>>("Graphics",new List<GraphicContent>(), true);
             foreach (GraphicContent content in contentList)
             {
-                LoadContent(content);
+                Receipt<GraphicContent> contentReceipt = LoadContent(content);
+                if (contentReceipt.Status)
+                {
+                    returnReceipt.Response.Add(content);
+                }
+                else
+                {
+                    foreach (Failure fail in contentReceipt.Failures)
+                    {
+                        returnReceipt.Failures.Add(fail);
+                    }
+                }
             }
+
+            return returnReceipt;
         }
 
-        public void LoadContent(GraphicContent content)
+        public Receipt<GraphicContent> LoadContent(GraphicContent content)
         {
+            if (_savedContent.ContainsKey(content.Asset))
+            {
+                return new Receipt<GraphicContent>("Graphics", content, false);
+            }
             Animation newAnimation = new Animation(content.Asset, Vector2.Zero, content.Rotation, content.Scale, content.Depth);
-            newAnimation.Load(Content, content.Asset, content.Frames, content.FramesPerSec);
+            try
+            {
+                newAnimation.Load(Content, content.Asset, content.Frames, content.FramesPerSec);
+            }
+            catch (Exception e)
+            {
+                Receipt<GraphicContent> returnReceipt = new Receipt<GraphicContent>("Graphics", content, false);
+                returnReceipt.Failures.Add(new Failure(e.ToString()));
+                return returnReceipt;
+            }
             AddAnimation(newAnimation);
+            _savedContent.Add(content.Asset, content);
+            return new Receipt<GraphicContent>("Graphics", content, true);
         }
 
         public void SetSpriteBatch(SpriteBatch spriteBatch)
@@ -161,6 +196,14 @@ namespace GameCraft
             _boxedLists.Remove(boxName);
             _boxedLists.Add(boxName, outBox);
             return true;
+        }
+
+        public int GetCurrentFrame(string objectName)
+        {
+            if (!DrawList.ContainsKey(objectName)) return 0;
+            Animation currentAnimation;
+            DrawList.TryGetValue(objectName, out currentAnimation);
+            return currentAnimation != null ? currentAnimation.GetCurrentFrame() : 0;
         }
 
                

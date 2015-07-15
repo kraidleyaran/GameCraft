@@ -1,26 +1,29 @@
 ﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 
 namespace GameCraft.Designer
 {
-    public class LinkedCondition
+    public class LinkedCondition : GameCondition
     {
-        private Dictionary<string, InputCondition<MouseButton, ButtonState>> _mouseButtonConditions = new Dictionary<string, InputCondition<MouseButton, ButtonState>>();
+        private Dictionary<string, MouseButtonCondition> _mouseButtonConditions = new Dictionary<string, MouseButtonCondition>();
         private Dictionary<string, MouseMoveCondition> _mouseMovementConditions = new Dictionary<string, MouseMoveCondition>();
-        private Dictionary<string, InputCondition<Keys, KeyState>> _keyInputConditions = new Dictionary<string, InputCondition<Keys, KeyState>>();
-        private Dictionary<string, InputCondition<Buttons, ButtonState>> _gamePadButtonConditions = new Dictionary<string, InputCondition<Buttons, ButtonState>>();
+        private Dictionary<string, KeyboardCondition> _keyInputConditions = new Dictionary<string, KeyboardCondition>();
+        private Dictionary<string, GamePadButtonCondition> _gamePadButtonConditions = new Dictionary<string, GamePadButtonCondition>();
         private Dictionary<string, GamePadThumbStickCondition> _gamePadThumbStickConditions = new Dictionary<string, GamePadThumbStickCondition>();
         private Dictionary<string, GamePadTriggerCondition> _gamePadTriggerConditions = new Dictionary<string, GamePadTriggerCondition>();
+        private Dictionary<string, CollisionCondition>  _collisionConditions = new Dictionary<string, CollisionCondition>();
+        private Dictionary<string, AnimationCondition>  _animationConditions = new Dictionary<string, AnimationCondition>();
+        
+        private Dictionary<string, GameStateCondition> _gameStateConditions = new Dictionary<string, GameStateCondition>();
+        private Dictionary<string, GameTimeCondition>  _gameTimeConditions = new Dictionary<string, GameTimeCondition>();
 
         private Dictionary<string, PropertyCondition> _propertyConditions = new Dictionary<string, PropertyCondition>();
-        public LinkedCondition(string name)
+        public LinkedCondition(string name) : base(name)
         {
             Name = name;
+            ConditionType = ConditionType.Linked;
         }
-        public string Name { get; private set; }
 
-        public Dictionary<string, InputCondition<MouseButton, ButtonState>> MouseButtonConditions
+        public Dictionary<string, MouseButtonCondition> MouseButtonConditions
         {
             get { return _mouseButtonConditions; }
             set { _mouseButtonConditions = value; }
@@ -32,13 +35,13 @@ namespace GameCraft.Designer
             set { _mouseMovementConditions = value; }
         }
 
-        public Dictionary<string, InputCondition<Keys, KeyState>> KeyInputConditions
+        public Dictionary<string, KeyboardCondition> KeyInputConditions
         {
             get { return _keyInputConditions; }
             set { _keyInputConditions = value; }
         }
 
-        public Dictionary<string, InputCondition<Buttons, ButtonState>> GamePadButtonConditions
+        public Dictionary<string, GamePadButtonCondition> GamePadButtonConditions
         {
             get { return _gamePadButtonConditions; }
             set { _gamePadButtonConditions = value; }
@@ -61,6 +64,30 @@ namespace GameCraft.Designer
             get { return _propertyConditions; }
             set { _propertyConditions = value; }
         }
+
+        public Dictionary<string, CollisionCondition> CollisionConditions
+        {
+            get { return _collisionConditions; }
+            set { _collisionConditions = value; }
+        }
+
+        public Dictionary<string, AnimationCondition> AnimationConditions
+        {
+            get { return _animationConditions; }
+            set { _animationConditions = value; }
+        }
+
+        public Dictionary<string, GameStateCondition> GameStateConditions
+        {
+            get { return _gameStateConditions; }
+            set { _gameStateConditions = value; }
+        }
+
+        public Dictionary<string, GameTimeCondition> GameTimeConditions
+        {
+            get { return _gameTimeConditions; }
+            set { _gameTimeConditions = value; }
+        }
         public Dictionary<string, int> GetConditionLengths()
         {
             Dictionary<string, int> response = new Dictionary<string, int>
@@ -71,7 +98,11 @@ namespace GameCraft.Designer
                 {"GamePadButons", _gamePadButtonConditions.Count},
                 {"GamePadThumbSticks", _gamePadThumbStickConditions.Count},
                 {"GamePadTriggers", _gamePadTriggerConditions.Count},
-                {"Property", _propertyConditions.Count}
+                {"Property", _propertyConditions.Count},
+                {"Collision", _collisionConditions.Count},
+                {"Animation", _animationConditions.Count},
+                {"GameState", _gameStateConditions.Count},
+                {"GameTime", _gameTimeConditions.Count}
             };
 
 

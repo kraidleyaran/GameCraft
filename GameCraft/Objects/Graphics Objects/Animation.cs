@@ -13,10 +13,14 @@ namespace GameCraft
         private float TotalElapsed;
         private bool Paused;
         private string Asset;
+        private int FramesPerSec;
 
 
         public float Rotation, Scale, Depth;
         public Vector2 Origin;
+
+        public float Height { get; private set; }
+        public float WidthPerFrame { get; private set; }
         public Animation(string name, Vector2 origin, float rotation,
             float scale, float depth)
         {
@@ -25,7 +29,9 @@ namespace GameCraft
             Scale = scale;
             Depth = depth;
             Name = name;
+            
         }
+        
         public void Load(ContentManager content, string asset,
             int frameCount, int framesPerSec)
         {
@@ -36,6 +42,9 @@ namespace GameCraft
             Frame = 0;
             TotalElapsed = 0;
             Paused = false;
+            Height = myTexture.Height;
+            WidthPerFrame = myTexture.Width/ (float)frameCount;
+            FramesPerSec = framesPerSec;
         }
 
         public string Name { get; private set; }
@@ -60,9 +69,9 @@ namespace GameCraft
         }
         public void DrawFrame(SpriteBatch batch, int frame, Vector2 screenPos)
         {
-            int FrameWidth = myTexture.Width / framecount;
-            Rectangle sourcerect = new Rectangle(FrameWidth * frame, 0,
-                FrameWidth, myTexture.Height);
+            int frameWidth = (int) WidthPerFrame;
+            Rectangle sourcerect = new Rectangle(frameWidth * frame, 0,
+                frameWidth, myTexture.Height);
             batch.Draw(myTexture, screenPos, sourcerect, Color.White,
                 Rotation, Origin, Scale, SpriteEffects.None, Depth);
         }
@@ -103,6 +112,13 @@ namespace GameCraft
         public AnimationParams GetParams()
         {
             return new AnimationParams(Asset, Rotation, Scale, Depth);
+        }
+
+        public Animation CloneAnimation(ContentManager content)
+        {
+            Animation returnAnimation = new Animation(Name, Origin, Rotation, Scale, Depth);
+            returnAnimation.Load(content, Asset, framecount, FramesPerSec);
+            return returnAnimation;
         }
 
     }
