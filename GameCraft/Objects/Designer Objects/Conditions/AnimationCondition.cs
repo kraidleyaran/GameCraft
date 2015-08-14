@@ -1,7 +1,9 @@
-﻿using GameCraft.Designer;
+﻿using System;
+using GameCraft.Designer;
 
 namespace GameCraft
 {
+    [Serializable]
     public class AnimationCondition : GameCondition
     {
         public AnimationCondition(string name) : base(name)

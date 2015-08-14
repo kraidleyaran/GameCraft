@@ -1,5 +1,8 @@
-﻿namespace GameCraft
+﻿using System;
+
+namespace GameCraft
 {
+    [Serializable]
     public class CollisionCondition : GameCondition
     {
         public CollisionCondition(string name) : base(name)

@@ -24,13 +24,13 @@ namespace GameCraft
     {
 		private static Game1 game;
 
-		internal static void RunGame ()
+		internal static void RunGame (string[] args)
 		{
-			game = new Game1 ();
-			game.Run ();
+		    game = args.Length == 0 ? new Game1() : new Game1(args);
+		    game.Run ();
 		}
 
-		/// <summary>
+	    /// <summary>
 		/// The main entry point for the application.
 		/// </summary>
 		#if !MONOMAC && !__IOS__		 
@@ -48,7 +48,7 @@ namespace GameCraft
 			#elif __IOS__
 			UIApplication.Main(args, null, "AppDelegate");
 			#else
-			RunGame ();
+			RunGame (args);
 			#endif
 		}
 

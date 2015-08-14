@@ -1,5 +1,8 @@
-﻿namespace GameCraft.Designer
+﻿using System;
+
+namespace GameCraft.Designer
 {
+    [Serializable]
     public class SoundAction : GameAction
     {
         public SoundAction(string name) : base(name)

@@ -1,5 +1,8 @@
-﻿namespace GameCraft.Designer
+﻿using System;
+
+namespace GameCraft.Designer
 {
+    [Serializable]
     public class GamePadTriggerCondition : InputCondition<float, float>
     {
         public GamePadTriggerCondition(string name) : base(name)

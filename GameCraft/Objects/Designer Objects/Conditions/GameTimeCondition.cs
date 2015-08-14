@@ -3,6 +3,7 @@ using GameCraft.Designer;
 
 namespace GameCraft
 {
+    [Serializable]
     public class GameTimeCondition : GameCondition
     {
         public GameTimeCondition(string name) : base(name)

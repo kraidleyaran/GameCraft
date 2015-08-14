@@ -16,7 +16,7 @@ namespace GameCraft.Designer
         }
 
         public string Name { get; private set; }
-
+        
         public Level Level { get; set; }
 
         public Dictionary<string, Rule> Rules { get; set; }

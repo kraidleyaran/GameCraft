@@ -85,7 +85,7 @@ namespace GameCraftTests
             GameObject newGameObject = new GameObject("new game object", "test");
 	        Observer.RegisterGameObject(newGameObject);
 
-            GameObjectProperty newProperty = new GameObjectProperty("new property", true);
+            GameObjectProperty newProperty = new GameObjectProperty("new property", true, true);
             ObjectMessage newMessage = new ObjectMessage(CommandObject.add);
             newMessage.PropertyList.Add(newProperty);
             newMessage.Receivers.Add(newGameObject.Name);
@@ -101,7 +101,7 @@ namespace GameCraftTests
             GameObject newGameObject = new GameObject("new game object", "test");
             Observer.RegisterGameObject(newGameObject);
 
-            GameObjectProperty newProperty = new GameObjectProperty("new property", true);
+            GameObjectProperty newProperty = new GameObjectProperty("new property", true, true);
             ObjectMessage newMessage = new ObjectMessage(CommandObject.add);
             newMessage.PropertyList.Add(newProperty);
             newMessage.Receivers.Add(newGameObject.Name);

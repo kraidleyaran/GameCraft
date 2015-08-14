@@ -1,5 +1,8 @@
-﻿namespace GameCraft.Designer
+﻿using System;
+
+namespace GameCraft.Designer
 {
+    [Serializable]
     public struct Relational
     {
         public Relational(string name, string property)

@@ -1,5 +1,8 @@
-﻿namespace GameCraft
+﻿using System;
+
+namespace GameCraft
 {
+    [Serializable]
     public struct PlayCount
     {
         public int Count;

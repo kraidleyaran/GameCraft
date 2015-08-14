@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace GameCraft
 {
+    [Serializable]
     public class SceneObject : GameObject
     {
         public SceneObject(string name, string type) : base(name, type)
@@ -11,14 +12,14 @@ namespace GameCraft
             Type = "Scene";
             List<GameObjectProperty> animationList = new List<GameObjectProperty>
             {
-                new GameObjectProperty("Animation", ""),
-                new GameObjectProperty("Visible", false),
-                new GameObjectProperty("PositionX", 50),
-                new GameObjectProperty("PositionY", 50),
-                new GameObjectProperty("Height", 32),
-                new GameObjectProperty("Width", 32),
-                new GameObjectProperty("Direction", ""),
-                new GameObjectProperty("DefaultAnimation", "")
+                new GameObjectProperty("Animation", "", ""),
+                new GameObjectProperty("Visible", false, false),
+                new GameObjectProperty("PositionX", 0,0),
+                new GameObjectProperty("PositionY", 0,0),
+                new GameObjectProperty("Height", 0,0),
+                new GameObjectProperty("Width", 0,0),
+                new GameObjectProperty("Direction", "", ""),
+                new GameObjectProperty("DefaultAnimation", "", "")
             };
             AddManyProperty(animationList);
             animationList.Clear();
@@ -32,14 +33,14 @@ namespace GameCraft
             Type = "Scene";
             List<GameObjectProperty> animationList = new List<GameObjectProperty>
             {
-                new GameObjectProperty("Animation", ""),
-                new GameObjectProperty("Visible", false),
-                new GameObjectProperty("PositionX", 0),
-                new GameObjectProperty("PositionY", 0),
-                new GameObjectProperty("Length", 0),
-                new GameObjectProperty("Width", 0),
-                new GameObjectProperty("Direction", ""),
-                new GameObjectProperty("DefaultAnimation", "")
+                new GameObjectProperty("Animation", "",""),
+                new GameObjectProperty("Visible", false, false),
+                new GameObjectProperty("PositionX", 0, 0),
+                new GameObjectProperty("PositionY", 0, 0),
+                new GameObjectProperty("Length", 0, 0),
+                new GameObjectProperty("Width", 0, 0),
+                new GameObjectProperty("Direction", "", ""),
+                new GameObjectProperty("DefaultAnimation", "", "")
             };
             AddManyProperty(animationList);
             animationList.Clear();

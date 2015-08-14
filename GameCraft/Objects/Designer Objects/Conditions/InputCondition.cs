@@ -1,5 +1,8 @@
-﻿namespace GameCraft.Designer
+﻿using System;
+
+namespace GameCraft.Designer
 {
+    [Serializable]
     public class InputCondition<InputType, InputState> : GameCondition
     {
         public InputCondition(string name) : base(name)

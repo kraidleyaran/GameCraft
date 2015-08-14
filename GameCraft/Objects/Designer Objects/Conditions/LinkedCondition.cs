@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace GameCraft.Designer
 {
+    [Serializable]
     public class LinkedCondition : GameCondition
     {
         private Dictionary<string, MouseButtonCondition> _mouseButtonConditions = new Dictionary<string, MouseButtonCondition>();

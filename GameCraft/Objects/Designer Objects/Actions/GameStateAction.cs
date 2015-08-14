@@ -1,5 +1,8 @@
-﻿namespace GameCraft.Designer
+﻿using System;
+
+namespace GameCraft.Designer
 {
+    [Serializable]
     public class GameStateAction : GameAction
     {
         public GameStateAction(string name) : base(name)

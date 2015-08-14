@@ -34,6 +34,7 @@ namespace GameCraft
     /// A position item in a quadtree
     /// </summary>
     /// <typeparam name="T">The type of the QuadTree item's parent</typeparam>
+    [Serializable]
     public class QuadTreePositionItem<T>
     {
         #region Events and Event Handlers
@@ -189,6 +190,7 @@ namespace GameCraft
     /// A node in a QuadTree
     /// </summary>
     /// <typeparam name="T">The type of the QuadTree's items' parents</typeparam>
+    [Serializable]
     public class QuadTreeNode<T>
     {
         #region Delegates
@@ -651,6 +653,7 @@ namespace GameCraft
     /// </summary>
     /// <typeparam name="T">The type of the QuadTree's items' parents</typeparam>
     /// <remarks>This QuadTree automatically resizes as needed</remarks>
+    [Serializable]
     public class QuadTree<T>
     {
         #region Properties

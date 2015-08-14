@@ -1,8 +1,10 @@
-﻿using GameCraft.Designer;
+﻿using System;
+using GameCraft.Designer;
 using Microsoft.Xna.Framework.Input;
 
 namespace GameCraft
 {
+    [Serializable]
     public class KeyboardCondition : InputCondition<Keys, KeyState>
     {
         public KeyboardCondition(string name) : base(name)

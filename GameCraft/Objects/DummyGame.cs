@@ -106,7 +106,7 @@ namespace GameCraft
             
             RuleList.Add(ifVisible_DrawToScreen_SetAnimation);
             RuleList.Add(ifVisible_DrawToScreen_SetAnimation_Collide);
-            Level testLevel = new Level("Test Level", new QuadTree<GameObject>(new Vector2(9000f,9000f), 2));
+            Level testLevel = new Level("Test Level", new LevelSize(9000f,9000f,2));
             GameState = new State("Test Game State", testLevel);
 
             GameState.Rules.Add(ifVisible_DrawToScreen_SetAnimation.Name, ifVisible_DrawToScreen_SetAnimation);

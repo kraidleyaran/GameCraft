@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using GameCraft.Archive;
+using GameCraft.Designer;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -20,10 +21,10 @@ namespace GameCraft
 		GraphicsDeviceManager graphics;
 		SpriteBatch spriteBatch;
         GameGraphics gameGraphics;
-	    private DummyGame dummyGame;
 	    private GameDesigner gameDesigner;
 	    private GameObserver gameObserver;
 	    private GameArchive gameArchive;
+	    private GameData loadGameData;
         TimeSpan oneSecond = new TimeSpan(0, 0, 1);
 
 		public Game1 ()
@@ -31,15 +32,40 @@ namespace GameCraft
             gameGraphics = new GameGraphics(this);
 		    gameDesigner = GameDesigner.Instance;
 		    gameArchive = GameArchive.Instance;
+		    loadGameData = gameArchive.LoadData(@"G:\GameCraft\testData.gcd");
 		    graphics = gameGraphics.DeviceManager;
 			gameObserver = GameObserver.Instance;
-            dummyGame = new DummyGame();
+            
 
             Content.RootDirectory = "Content";	            
 			graphics.IsFullScreen = false;
-            graphics.PreferredBackBufferHeight = 720;
-		    graphics.PreferredBackBufferWidth = 1280;
+		    graphics.PreferredBackBufferHeight = loadGameData.GameOptions.ViewSize.Height;
+		    graphics.PreferredBackBufferWidth = loadGameData.GameOptions.ViewSize.Width;
+            
 		}
+        public Game1(string[] args)
+        {
+            gameGraphics = new GameGraphics(this);
+            gameDesigner = GameDesigner.Instance;
+            gameArchive = GameArchive.Instance;
+            try
+            {
+                loadGameData = gameArchive.LoadData(args[0]);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Cannot Load Game Data", e);
+            }
+            
+            graphics = gameGraphics.DeviceManager;
+            gameObserver = GameObserver.Instance;
+
+
+            Content.RootDirectory = "Content";
+            graphics.IsFullScreen = false;
+            graphics.PreferredBackBufferHeight = 720;
+            graphics.PreferredBackBufferWidth = 1280;
+        }
 
 		/// <summary>
 		/// Allows the game to perform any initialization it needs to before starting to run.
@@ -49,10 +75,14 @@ namespace GameCraft
 		/// </summary>
 		protected override void Initialize ()
 		{
-            gameDesigner.CurrentState = dummyGame.GameState;
-            gameObserver.RegisterGameObject(dummyGame.alexObject);
-		    gameObserver.RegisterGameObject(dummyGame.collideObject);
-		    gameDesigner.CurrentState = dummyGame.GameState;
+            gameDesigner.CurrentState = loadGameData.StateData.TitleState;
+		    gameDesigner.TitleState = loadGameData.StateData.TitleState;
+		    gameObserver.RegisterManyGameObjects(loadGameData.ObserverData.GameObjects);
+
+            foreach (KeyValuePair<string, State> pair in loadGameData.StateData.States)
+		    {
+		        gameDesigner.StateList.Add(pair.Key, pair.Value);
+		    }
             IsFixedTimeStep = false;
             
 			// TODO: Add your initialization logic here
@@ -69,9 +99,10 @@ namespace GameCraft
 			// Create a new SpriteBatch, which can be used to draw textures.
 			spriteBatch = new SpriteBatch (GraphicsDevice);
             gameGraphics.SetSpriteBatch(spriteBatch);
-            gameGraphics.LoadContent(dummyGame.BlueMageStanding);
-            gameGraphics.LoadContent(dummyGame.BlueMageRightWalking);
-
+		    foreach (KeyValuePair<string, GraphicContent> pair in loadGameData.GraphicsData.GraphicContents)
+		    {
+		        gameGraphics.LoadContent(pair.Value);
+		    }
 
 		    //TODO: use this.Content to load your game content here 
 		}
@@ -97,7 +128,7 @@ namespace GameCraft
             if ((gameTime.TotalGameTime - gameTime.ElapsedGameTime) >= oneSecond)
 		    {
                 gameDesigner.Update(gameTime);
-                gameGraphics.Update(gameTime);    
+                gameGraphics.Update(gameTime);
 		    }
             
             

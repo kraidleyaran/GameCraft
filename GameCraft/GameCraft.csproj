@@ -68,7 +68,13 @@
     <Compile Include="Game1.cs" />
     <Compile Include="Objects\Archive\GameArchive.cs" />
     <Compile Include="Objects\Archive\GameData.cs" />
+    <Compile Include="Objects\Archive\GameOptions.cs" />
+    <Compile Include="Objects\Archive\GraphicsData.cs" />
     <Compile Include="Objects\Archive\IArchiveData.cs" />
+    <Compile Include="Objects\Archive\ObserverData.cs" />
+    <Compile Include="Objects\Archive\SoundData.cs" />
+    <Compile Include="Objects\Archive\StateData.cs" />
+    <Compile Include="Objects\Archive\ViewSize.cs" />
     <Compile Include="Objects\Circle.cs" />
     <Compile Include="Objects\CollisionBox.cs" />
     <Compile Include="Objects\CollisionCircle.cs" />
@@ -118,6 +124,7 @@
     <Compile Include="Objects\Graphics Objects\PlayCount.cs" />
     <Compile Include="Objects\Graphics Objects\PlayedCount.cs" />
     <Compile Include="Objects\Level\Level.cs" />
+    <Compile Include="Objects\Level\LevelSize.cs" />
     <Compile Include="Objects\Message Objects\Failure.cs" />
     <Compile Include="Objects\Level\QuadTree.cs" />
     <Compile Include="Objects\SceneObject.cs" />

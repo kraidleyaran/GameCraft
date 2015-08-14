@@ -33,6 +33,7 @@ namespace GameCraft
     /// <summary>
     /// A floating-point rectangle
     /// </summary>
+    [Serializable]
     public struct FRect
     {
         #region Properties

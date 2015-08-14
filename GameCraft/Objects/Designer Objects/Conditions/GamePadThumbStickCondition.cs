@@ -1,5 +1,8 @@
-﻿namespace GameCraft.Designer
+﻿using System;
+
+namespace GameCraft.Designer
 {
+    [Serializable]
     public class GamePadThumbStickCondition : InputCondition<float, float>
     {
         public GamePadThumbStickCondition(string name) : base(name)

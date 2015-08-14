@@ -1,7 +1,11 @@
-﻿namespace GameCraft.Designer
+﻿using System;
+
+namespace GameCraft.Designer
 {
+    [Serializable]
     public class PropertyCondition : GameCondition
     {
+
         public PropertyCondition(string name) : base(name)
         {
             Name = name;

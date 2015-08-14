@@ -1,7 +1,9 @@
-﻿using GameCraft.Designer;
+﻿using System;
+using GameCraft.Designer;
 
 namespace GameCraft
 {
+    [Serializable]
     public class MouseMoveCondition : InputCondition<float, float>
     {
         public MouseMoveCondition(string name) : base(name)

@@ -18,6 +18,7 @@ namespace GameCraft
         private GameObserver Observer = GameObserver.Instance;
         private State _state;
         private Dictionary<string, State > _states = new Dictionary<string, State>();
+        private GameArchive gameArchive = GameArchive.Instance;
         
         
         static GameDesigner()
@@ -37,7 +38,7 @@ namespace GameCraft
 
         public void SaveData()
         {
-
+            gameArchive.GameData.StateData = new StateData(_states, TitleState);
         }
 
         public State CurrentState
@@ -45,12 +46,14 @@ namespace GameCraft
             get { return _state; }
             set
             {
-                Observer.CollisionManager.CurrentTree = value.Level.QuadTree;
+                Observer.CollisionManager.CurrentTree = new QuadTree<GameObject>(new Vector2(value.Level.LevelSize.X, value.Level.LevelSize.Y), value.Level.LevelSize.MaxItems);
                 _state = value;
             }
         }
 
         public Dictionary<string, State> StateList { get {return _states;} }
+
+        public State TitleState { get; set; }
 
         public void Update(GameTime gameTime)
         {
@@ -103,7 +106,7 @@ namespace GameCraft
                                 }
 
                                 GameObjectProperty addGameObjectProperty =
-                                    new GameObjectProperty(action.Value.Property, addNewValue);
+                                    new GameObjectProperty(action.Value.Property, addNewValue,getReceipt.Response.DefaultValue);
                                 ObjectMessage addNewMessage = new ObjectMessage(CommandObject.set,
                                     addGameObjectProperty);
                                 addNewMessage.Receivers.Add(action.Value.TargetObj);
@@ -143,7 +146,7 @@ namespace GameCraft
                                 }
 
                                 GameObjectProperty subtractGameObjectProperty =
-                                    new GameObjectProperty(action.Value.Property, subtractNewValue);
+                                    new GameObjectProperty(action.Value.Property, subtractNewValue, getSubtractReceipt.Response.DefaultValue);
                                 ObjectMessage subtractnewMessage = new ObjectMessage(CommandObject.set,
                                     subtractGameObjectProperty);
                                 subtractnewMessage.Receivers.Add(action.Value.TargetObj);
@@ -152,8 +155,11 @@ namespace GameCraft
                                 break;
 
                             case Operation.Set:
+                                Receipt<GameObjectProperty> getGameObjectProperty =
+                                    Observer.ObjList.Find(obj => obj.Name == action.Value.TargetObj)
+                                        .GetProperty(action.Value.Property);
                                 GameObjectProperty setGameObjectProperty =
-                                    new GameObjectProperty(action.Value.Property, action.Value.SetValue);
+                                    new GameObjectProperty(action.Value.Property, action.Value.SetValue, getGameObjectProperty.Response.DefaultValue);
 
                                 ObjectMessage setNewMessage;
                                 if (action.Value.IsRelational)
@@ -209,7 +215,7 @@ namespace GameCraft
                                 }
 
                                 GameObjectProperty multiplyGameObjectProperty =
-                                    new GameObjectProperty(action.Value.Property, multiplyNewValue);
+                                    new GameObjectProperty(action.Value.Property, multiplyNewValue, getMultiplyReceipt.Response.DefaultValue);
                                 ObjectMessage multiplyNewMessage = new ObjectMessage(CommandObject.set,
                                     multiplyGameObjectProperty);
                                 multiplyNewMessage.Receivers.Add(action.Value.TargetObj);
@@ -247,7 +253,7 @@ namespace GameCraft
                                 }
 
                                 GameObjectProperty divideGameObjectProperty =
-                                    new GameObjectProperty(action.Value.Property, divideNewValue);
+                                    new GameObjectProperty(action.Value.Property, divideNewValue, getDivideReceipt.Response.DefaultValue);
                                 ObjectMessage divideNewMessage = new ObjectMessage(CommandObject.set,
                                     divideGameObjectProperty);
                                 divideNewMessage.Receivers.Add(action.Value.TargetObj);

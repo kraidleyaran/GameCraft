@@ -4,21 +4,17 @@ using System.Collections.Generic;
 namespace GameCraft.Archive
 {
     [Serializable]
-    public class GameData<T>
+    public class GameData
     {
         public GameData()
         {
             
         }
 
-        public GameData(string name, T data)
-        {
-            Name = name;
-            Data = data;
-            DataType = typeof (T).ToString();
-        }
-        public string Name { get; set; }
-        public T Data { get; set; }
-        public string DataType { get; set; }
+        public ObserverData ObserverData { get; set; }
+        public StateData StateData { get; set; }
+        public GraphicsData GraphicsData { get; set; }
+        public SoundData SoundData { get; set; }
+        public GameOptions GameOptions { get; set; }
     }
 }

@@ -1,5 +1,8 @@
-﻿namespace GameCraft
+﻿using System;
+
+namespace GameCraft
 {
+    [Serializable]
     public class GraphicContent
     {
         public GraphicContent(string asset, int frames, int framesPerSec, float rotation, float scale, float depth)

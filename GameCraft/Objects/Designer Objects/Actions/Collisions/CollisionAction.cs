@@ -1,5 +1,8 @@
-﻿namespace GameCraft.Designer
+﻿using System;
+
+namespace GameCraft.Designer
 {
+    [Serializable]
     public class CollisionAction : GameAction
     {
         public CollisionAction(string name) :base(name)

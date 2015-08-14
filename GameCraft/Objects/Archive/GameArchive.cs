@@ -10,7 +10,9 @@ namespace GameCraft.Archive
 {
     public class GameArchive
     {
-         static readonly GameArchive instance = new GameArchive();
+        static readonly GameArchive instance = new GameArchive();
+        public GameData GameData = new GameData();
+        GameDesigner gameDesigner = GameDesigner.Instance;
 
         static GameArchive()
         {
@@ -30,13 +32,18 @@ namespace GameCraft.Archive
             }
         }
 
-        public void SaveData()
+        public void SaveData(string FilePath)
         {
-
+            FileStream stream = File.Create(FilePath);
+            BinaryFormatter formatter = new BinaryFormatter();
+            formatter.Serialize(stream, GameData);
+            stream.Close();
         }
-        public void LoadData(string filePath)
+        public GameData LoadData(string filePath)
         {
-
+            FileStream stream = File.OpenRead(filePath);
+            BinaryFormatter formatter = new BinaryFormatter();
+            return (GameData)formatter.Deserialize(stream);
         }
 
     }

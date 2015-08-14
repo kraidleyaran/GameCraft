@@ -71,7 +71,7 @@ namespace GameCraft
 			bool response = false;
 
 		    if (doesPropExist != false) return response;
-		    GameObjectProperty newGameObjProperty = new GameObjectProperty (propName, null);
+		    GameObjectProperty newGameObjProperty = new GameObjectProperty (propName, null, null);
 		    _properties.Add (newGameObjProperty);
 		    response = true;
 		    return response;
@@ -197,8 +197,42 @@ namespace GameCraft
 
 	    public GameObject CloneGameObject(string name)
 	    {
-            return new GameObject(name, _properties, Type);
+            List<GameObjectProperty> returnList = new List<GameObjectProperty>();
+            returnList.AddRange(_properties);
+            return new GameObject(name, returnList, Type);
 	    }
+
+        public bool SetPropertyToDefault(string propertyName)
+        {
+            GameObjectProperty objProp = _properties.Find(prop => prop.Name == propertyName);
+            if (objProp == null) return false;
+            objProp.Value = objProp.DefaultValue;
+            return true;
+        }
+
+        public Receipt<List<string>> SetManyPropertyToDefault(List<string> propertyNames)
+        {
+            Receipt<List<string>> returnReceipt = new Receipt<List<string>>(Name, new List<string>(), true );
+            foreach (string name in propertyNames)
+            {
+                if (SetPropertyToDefault(name))
+                {
+                    returnReceipt.Response.Add(name);
+                }
+                Failure fail = new Failure(name);
+            }
+
+            return returnReceipt;
+        }
+
+        public void SetAllPropertiesToDefault()
+        {
+            foreach (GameObjectProperty prop in _properties)
+            {
+                prop.Value = prop.DefaultValue;
+            }
+        }
+
 
 	}
 

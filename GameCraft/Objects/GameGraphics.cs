@@ -2,18 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using GameCraft.Archive;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace GameCraft
 {
-    public class GameGraphics
+    public class GameGraphics : IArchiveData
     {
         
         private Dictionary<string, Animation>  _animations = new Dictionary<string, Animation>();
         private Dictionary<string, GameBox> _boxedLists = new Dictionary<string, GameBox>();
         private Dictionary<string, GraphicContent> _savedContent = new Dictionary<string, GraphicContent>();
+        private GameArchive gameArchive = GameArchive.Instance;
         
         private GameObserver observer = GameObserver.Instance;
         
@@ -33,8 +35,12 @@ namespace GameCraft
         public SpriteBatch SpriteBatch { get; private set; }
 
         public Dictionary<string, Animation> DrawList { get; private set; }
-        private Dictionary<string, PlayedCount> PositionList { get; set; } 
+        private Dictionary<string, PlayedCount> PositionList { get; set; }
 
+        public void SaveData()
+        {
+            gameArchive.GameData.GraphicsData = new GraphicsData(_savedContent);
+        }
         public void Update(GameTime gameTime)
         {
             float elapsed = (float) gameTime.ElapsedGameTime.TotalSeconds;

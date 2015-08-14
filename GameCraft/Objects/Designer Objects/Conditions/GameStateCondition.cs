@@ -1,8 +1,10 @@
-﻿using System.Security.Principal;
+﻿using System;
+using System.Security.Principal;
 using GameCraft.Designer;
 
 namespace GameCraft
 {
+    [Serializable]
     public class GameStateCondition : GameCondition
     {
         public GameStateCondition(string name) : base(name)

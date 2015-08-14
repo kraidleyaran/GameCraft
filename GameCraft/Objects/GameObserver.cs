@@ -64,7 +64,8 @@ namespace GameCraft
 
         public void SaveData()
         {
-
+            
+            gameArchive.GameData.ObserverData = new ObserverData(_objList);
         }
 	    public Receipt<GameObject> RegisterGameObject(GameObject newGameObject)
 	    {

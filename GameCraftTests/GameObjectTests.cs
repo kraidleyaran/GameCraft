@@ -159,10 +159,10 @@ namespace GameCraftTests
 		{
             GameObject newGameObject = new GameObject("new game object", "test");
 			string propName = "new property";
-			GameObjectProperty newProperty = new GameObjectProperty(propName, false);
+			GameObjectProperty newProperty = new GameObjectProperty(propName, false, false);
 			newGameObject.AddProperty (newProperty);
 
-			GameObjectProperty newerProperty = new GameObjectProperty(propName, true);
+			GameObjectProperty newerProperty = new GameObjectProperty(propName, true, true);
 			ObjectMessage newMessage = new ObjectMessage (CommandObject.set, newerProperty);
 			Receipt<List<GameObjectProperty>> newReceipt = newGameObject.Receive (newMessage);
 			Assert.IsTrue (newReceipt.Status);
@@ -175,7 +175,7 @@ namespace GameCraftTests
 		{
             GameObject newGameObject = new GameObject("new game object", "test");
 			string propName = "new property";
-			GameObjectProperty newProperty = new GameObjectProperty(propName, false);
+			GameObjectProperty newProperty = new GameObjectProperty(propName, false, false);
 
 			ObjectMessage newMessage = new ObjectMessage (CommandObject.set, newProperty);
 			Receipt<List<GameObjectProperty>> newReceipt = newGameObject.Receive (newMessage);
@@ -187,7 +187,7 @@ namespace GameCraftTests
 		{
             GameObject newGameObject = new GameObject("new game object", "test");
 			string propName = "new property";
-			GameObjectProperty newProperty = new GameObjectProperty (propName, true);
+			GameObjectProperty newProperty = new GameObjectProperty (propName, true, true);
 			newGameObject.AddProperty (newProperty);
 
 			GameObjectProperty messageProp = new GameObjectProperty (propName);
@@ -202,7 +202,7 @@ namespace GameCraftTests
 		{
             GameObject newGameObject = new GameObject("new game object", "test");
 			string propName = "new property";
-			GameObjectProperty newProperty = new GameObjectProperty (propName, true);
+			GameObjectProperty newProperty = new GameObjectProperty (propName, true, true);
 
 			newGameObject.AddProperty (newProperty);
 
